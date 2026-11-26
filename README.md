@@ -1,115 +1,132 @@
 # Study Quest
 
-Study Quest is a study planner you can play. Underneath it is a calm planner:
-a deep teal page, a row of day columns and white session cards. On top of it
-sits a game layer — every session is worth XP, ticking one off levels you up,
-today's quests pay bonuses, badges mark milestones and each test is a boss
-whose health bar is made of study minutes.
+Study Quest est un planner de révisions qui se joue. Sous le capot, c'est un
+planning calme : une page bleu-vert profond, une rangée de colonnes par jour et
+des cartes de session blanches. Par-dessus vient une couche jeu — chaque
+session vaut de l'XP, cocher une carte fait monter de niveau, les quêtes du jour
+rapportent des bonus, les badges marquent les étapes et chaque contrôle est un
+boss dont la barre de vie est faite de minutes de révision.
 
-Everything is stored in the browser (localStorage, key `study-planner:v2`):
-there is no account, server database or sync. The look is pixel art — Pixelify
-Sans for text, Press Start 2P for headings, square corners, 2px ink frames,
-hard offset shadows, a pixel grid and faint scanlines behind the page.
+Tout est enregistré dans le navigateur (localStorage, clé `study-planner:v2`) :
+pas de compte, pas de base de données, pas de synchronisation. Le style est
+pixel art — Pixelify Sans pour le texte, Press Start 2P pour les titres, angles
+droits, cadres d'encre de 2 px, ombres dures décalées, grille de pixels et
+scanlines discrètes en fond.
 
-## What it does
+## Ce que fait l'application
 
-- **Plan a test.** "Start your quest" asks for a subject, a date, total study
-  time and a session length, then spreads the sessions across the days before
-  it (`src/lib/plan.ts`).
-- **The week board.** Days scroll sideways on wide screens; cards can be
-  added, edited, duplicated, marked done, deleted (with undo) and dragged
-  between days. Cards under a test link back to it.
-- **Focus timer.** Press play on a card, or "Start focus" in its menu, for a
-  full-screen Pomodoro timer (focus blocks with short breaks). When the last
-  block ends the card is marked done and the time is logged; leaving early
-  keeps the minutes you focused.
-- **Daily limit.** Days over the limit (default 2h) get a warm ring, an "over"
-  pill and **Rebalance**, which moves their last sessions to the nearest days
-  with room, never past a session's test. Set it in More → Daily limit & timer.
-- **Exam readiness.** Every test card and the progress page compare study on
-  that subject in the three weeks before the test against the test's target;
-  a light fill shows what is still planned.
-- **Quest log** (`/quests`, the level strap in the header): level, rank, XP to
-  the next level, the four quests of the day, badges, bosses and the warm-up
-  game. XP comes from the same study record the planner writes, so nothing is
-  stored twice: one XP per minute studied plus 15 per session ticked off, plus
-  today's cleared quests and warm-up bonuses. Levels follow a fixed curve and
-  the streak multiplies what today is worth (×1.25 from 3 days, ×1.5 from 7,
-  ×2 from 14) — all in `src/lib/game.ts`.
-- **Warm-up game.** A 30-second memory match with your subjects that pays up
-  to 50 bonus XP, for three paid rounds a day (`WARM_UP_DAILY_LIMIT`); after
-  that the board still plays but earns nothing until tomorrow.
-- **Progress** (`/stats`): time studied per subject, streak, sessions done,
-  next test and the last 14 days against the daily limit.
-- **Subjects** (`/subjects`): add, rename, recolour and re-icon subjects.
-- **Week and month views** (`/week`, `/month`): the week shows Monday to
-  Sunday with drag and drop, the month every day at a glance and opens a day
-  on the board.
-- **Print a week** (`/print?d=YYYY-MM-DD`): a white one-page sheet sized to
-  screenshot cleanly and to print landscape.
-- **Onboarding.** An empty planner (More → Start fresh) shows a welcome panel
-  instead of the board. Set `seedForNewUsers` to `false` in `src/data.ts` to
-  open new visitors on it instead of the sample plan.
-- **Style guide** (`/styleguide`, linked from the More menu and page footers):
-  every token and component, rendered live.
+- **Planifier un contrôle.** « Start your quest » demande une matière, une
+  date, un temps de révision total et une durée de session, puis répartit les
+  sessions sur les jours qui précèdent (`src/lib/plan.ts`).
+- **Le tableau de la semaine.** Les jours défilent horizontalement sur grand
+  écran ; les cartes peuvent être ajoutées, modifiées, dupliquées, cochées,
+  supprimées (avec annulation) et glissées d'un jour à l'autre. Les cartes
+  rattachées à un contrôle renvoient vers celui-ci.
+- **Minuteur de concentration.** Le bouton lecture d'une carte, ou « Start
+  focus » dans son menu, ouvre un minuteur Pomodoro plein écran (blocs de
+  concentration entrecoupés de pauses). À la fin du dernier bloc, la carte est
+  cochée et le temps est enregistré ; quitter plus tôt conserve les minutes
+  déjà faites.
+- **Limite quotidienne.** Un jour au-delà de la limite (2 h par défaut) reçoit
+  un anneau d'alerte, une pastille « over » et un bouton **Rebalance** qui
+  déplace les dernières sessions vers les jours les plus proches ayant de la
+  place, sans jamais dépasser la date d'un contrôle. Réglable dans More → Daily
+  limit & timer.
+- **Préparation à l'examen.** Chaque carte de contrôle et la page de progrès
+  comparent le travail sur la matière dans les trois semaines précédant le
+  contrôle à l'objectif fixé ; un remplissage clair montre ce qui reste
+  planifié.
+- **Journal de quêtes** (`/quests`, le bandeau de niveau dans l'en-tête) :
+  niveau, rang, XP jusqu'au niveau suivant, les quatre quêtes du jour, les
+  badges, les boss et le mini-jeu d'échauffement. L'XP vient du même journal
+  d'étude que le planner, rien n'est stocké deux fois : un XP par minute
+  étudiée plus 15 par session cochée, plus les quêtes du jour et les bonus du
+  warm-up. Les niveaux suivent une courbe fixe et la série multiplie la valeur
+  du jour (×1,25 dès 3 jours, ×1,5 dès 7, ×2 dès 14) — tout est dans
+  `src/lib/game.ts`.
+- **Mini-jeu d'échauffement.** Un memory de 30 secondes avec tes matières, qui
+  rapporte jusqu'à 50 XP bonus, pour trois parties payées par jour
+  (`WARM_UP_DAILY_LIMIT`) ; ensuite le plateau reste jouable mais ne rapporte
+  plus rien jusqu'au lendemain.
+- **Progrès** (`/stats`) : temps étudié par matière, série, sessions terminées,
+  prochain contrôle et les 14 derniers jours face à la limite quotidienne.
+- **Matières** (`/subjects`) : ajouter, renommer, changer la couleur et l'icône.
+- **Vues semaine et mois** (`/week`, `/month`) : la semaine affiche du lundi au
+  dimanche avec glisser-déposer, le mois donne tous les jours d'un coup d'œil et
+  ouvre un jour sur le tableau.
+- **Imprimer une semaine** (`/print?d=YYYY-MM-DD`) : une feuille blanche d'une
+  page, dimensionnée pour être capturée proprement et imprimée en paysage.
+- **Accueil des nouveaux.** Un planner vide (More → Start fresh) affiche un
+  panneau de bienvenue à la place du tableau. Passer `seedForNewUsers` à
+  `false` dans `src/data.ts` pour que les nouveaux visiteurs arrivent dessus
+  plutôt que sur le plan d'exemple.
+- **Guide de style** (`/styleguide`, lié depuis le menu More et les pieds de
+  page) : tous les tokens et composants, rendus en direct.
 
-## On a phone
+## Sur téléphone
 
-Below 768px the app has its own layout rather than a shrunken board:
+En dessous de 768 px, l'application a sa propre mise en page, pas un tableau
+rétréci :
 
-- a fixed bottom tab bar (Planner, Quests, Progress, Subjects) with safe-area
-  padding, and a lighter header that keeps only the logo, level and More;
-- the planner becomes **one day at a time**: a swipeable date strip with a dot
-  per session and a flag for tests, then that day's cards full width, its total
-  and its Add session / Rebalance actions (`src/app/MobileBoard.tsx`);
-- the week stacks its seven days as compact blocks, the month keeps the seven
-  columns with dots instead of card names;
-- dialogs rise as bottom sheets with their footer clear of the home indicator.
+- une barre d'onglets fixe en bas (Planner, Quests, Progress, Subjects) avec la
+  marge de sécurité de l'écran, et un en-tête allégé qui ne garde que le logo,
+  le niveau et le menu More ;
+- le planner passe **à un jour à la fois** : un bandeau de dates à faire
+  défiler, avec un point par session et un drapeau pour les contrôles, puis les
+  cartes du jour en pleine largeur, son total et ses actions Add session /
+  Rebalance (`src/app/MobileBoard.tsx`) ;
+- la semaine empile ses sept jours en blocs compacts, le mois garde ses sept
+  colonnes avec des points à la place des noms de cartes ;
+- les dialogues deviennent des feuilles qui montent du bas, avec un pied de
+  dialogue au-dessus de la barre gestuelle du téléphone.
 
-## Run it
+## Lancer le projet
 
-Requires Node 20+ and pnpm. There is no Bun step.
+Nécessite Node 20+ et pnpm. Aucune étape avec Bun.
 
 ```sh
-pnpm install       # installs from pnpm-lock.yaml
-pnpm run dev       # Vite + the Worker in workerd, on http://localhost:5182
+pnpm install       # installe à partir de pnpm-lock.yaml
+pnpm run dev       # Vite + le Worker dans workerd, sur http://localhost:5182
 pnpm run build     # dist/client (assets) + dist/study_planner/index.js (Worker)
 pnpm run typecheck # tsc --noEmit
 ```
 
-`pnpm-workspace.yaml` approves the build scripts of `esbuild` and `workerd`;
-pnpm 11 refuses to run an install that leaves them unapproved.
+`pnpm-workspace.yaml` autorise les scripts de build de `esbuild` et `workerd` ;
+pnpm 11 refuse une installation qui les laisserait non approuvés.
 
-## How it is built
+## Comment c'est construit
 
-React 19 with Vite 8, Tailwind CSS v4 (`@theme` tokens in `src/styles.css`),
-Motion for animation, and a small Cloudflare Worker that serves the app.
+React 19 avec Vite 8, Tailwind CSS v4 (tokens `@theme` dans `src/styles.css`),
+Motion pour les animations, et un petit Worker Cloudflare qui sert l'application.
 
-- `src/app/` — the screens: `Board` (wide), `MobileBoard` (phones),
-  `MobileTabBar`, `DayColumn`, `SessionCard`, `WeekView`, `MonthView`,
-  `Hero`, `FocusTimer`, `QuestsPage`, `MemoryGame`, `GameHud`, `StatsPage`,
-  `SubjectsPage`, `PrintWeek`, `Onboarding`, `StyleGuide`, and the dialogs
-  (`PlanDialog`, `ItemDialog`, `SubjectDialog`, `SettingsDialog`).
-- `src/components/` — the design system: `Button`, `IconButton`, `Panel`,
-  `Dialog`, `Menu`, `Field` / `Segmented` / pickers, `Pill`, `SubjectChip`,
+- `src/app/` — les écrans : `Board` (grand écran), `MobileBoard` (téléphone),
+  `MobileTabBar`, `DayColumn`, `SessionCard`, `WeekView`, `MonthView`, `Hero`,
+  `FocusTimer`, `QuestsPage`, `MemoryGame`, `GameHud`, `StatsPage`,
+  `SubjectsPage`, `PrintWeek`, `Onboarding`, `StyleGuide`, et les boîtes de
+  dialogue (`PlanDialog`, `ItemDialog`, `SubjectDialog`, `SettingsDialog`).
+- `src/components/` — le design system : `Button`, `IconButton`, `Panel`,
+  `Dialog`, `Menu`, `Field` / `Segmented` / sélecteurs, `Pill`, `SubjectChip`,
   `ReadinessMeter`, `ProgressRing`, `Charts`, `StatTile`, `Toast`, `Logo`.
-  See them all at `/styleguide`.
-- `src/lib/store.ts` — the reducer and localStorage persistence (a `v1` save
-  is migrated). Swap its load/save for API calls to keep plans in a database.
-- `src/lib/game.ts` — XP, levels, ranks, streak boost, daily quests, badges,
-  bosses and the warm-up cap/reward. `src/lib/insights.ts` holds day load,
-  rebalance, readiness, streak and per-subject time; `src/lib/focus.ts` splits
-  a session into Pomodoro blocks; `src/lib/plan.ts` spreads sessions.
-- `src/lib/router.tsx` — a tiny History-API router (`useRoute`, `navigate`,
-  `Link`); the Worker serves `index.html` for any app path.
-- `src/data.ts` — every string, the default subjects, colours and icons, the
-  daily-limit and timer options, the sample plan and sample study history.
-- `src/worker/index.ts` — `GET /api/health`, a JSON 404 for other `/api`
-  paths, and the app for everything else.
+  Tous visibles sur `/styleguide`.
+- `src/lib/store.ts` — le reducer et la persistance localStorage (un
+  enregistrement `v1` est migré). Remplacer son load/save par des appels API
+  pour garder les plans en base.
+- `src/lib/game.ts` — XP, niveaux, rangs, bonus de série, quêtes du jour,
+  badges, boss et plafond/récompense du warm-up. `src/lib/insights.ts` contient
+  la charge d'un jour, le rééquilibrage, la préparation, la série et le temps
+  par matière ; `src/lib/focus.ts` découpe une session en blocs Pomodoro ;
+  `src/lib/plan.ts` répartit les sessions.
+- `src/lib/router.tsx` — un routeur minimal basé sur l'History API (`useRoute`,
+  `navigate`, `Link`) ; le Worker sert `index.html` pour toutes les routes.
+- `src/data.ts` — tous les textes, les matières par défaut, couleurs et icônes,
+  les options de limite quotidienne et de minuteur, le plan d'exemple et
+  l'historique d'étude d'exemple.
+- `src/worker/index.ts` — `GET /api/health`, un 404 JSON pour les autres chemins
+  `/api`, et l'application pour tout le reste.
 
-Motion respects the system "reduce motion" setting.
+Les animations respectent le réglage système « réduire les animations ».
 
-## Deploy with Freebuff Sites
+## Déployer avec Freebuff Sites
 
-`deploy.json` points at the build output. Run `pnpm run build`, then deploy
-this directory with the `sites_deploy` tool (or the Sites API).
+`deploy.json` pointe vers la sortie de build. Lancer `pnpm run build`, puis
+déployer ce dossier avec l'outil `sites_deploy` (ou l'API Sites).
