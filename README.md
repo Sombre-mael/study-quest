@@ -126,7 +126,3 @@ Motion pour les animations, et un petit Worker Cloudflare qui sert l'application
 
 Les animations respectent le réglage système « réduire les animations ».
 
-## Déployer avec Freebuff Sites
-
-`deploy.json` pointe vers la sortie de build. Lancer `pnpm run build`, puis
-déployer ce dossier avec l'outil `sites_deploy` (ou l'API Sites).
