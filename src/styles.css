@@ -1,0 +1,217 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens. A pixel-art console look: a dark teal screen with a faint
+  pixel grid and scanlines, chunky cream panels with a 2px ink frame and a
+  hard offset shadow, and no soft corners anywhere. Subject colours live in
+  src/data.ts so a new subject is one line there, not a token here.
+*/
+@theme {
+  --font-sans: 'Pixelify Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Press Start 2P', ui-monospace, 'Courier New', monospace;
+
+  /* Page */
+  --color-teal-950: #02514d;
+  --color-teal-900: #03615c;
+  --color-teal-700: #0b8078;
+  --color-teal-500: #19a093;
+  --color-ink: #10201f;
+  --color-ink-soft: #566463;
+  /* Decorative only (icons, rules); too light for text on white. */
+  --color-ink-faint: #8d9a99;
+
+  /* Surfaces */
+  --color-column: rgb(2 38 35 / 0.34);
+  --color-column-edge: rgb(255 255 255 / 0.34);
+  --color-column-hot: rgb(255 255 255 / 0.16);
+  --color-card: #fdf8ec;
+  --color-line: #ded7c3;
+  --color-coin: #ffd166;
+
+  /* Pills and accents */
+  --color-lavender: #eeebfb;
+  --color-lavender-ink: #1d1a33;
+  --color-flag: #fff4e5;
+  --color-flag-ink: #c2410c;
+  --color-today: #8b5cf6;
+  --color-danger: #dc2626;
+  --color-success: #166534;
+  --color-success-soft: #e3f5ec;
+
+  /* Pixel corners: squares, never rounds. */
+  --radius-chip: 0px;
+  --radius-card: 0px;
+  --radius-column: 0px;
+  --radius-dialog: 0px;
+
+  /* Hard, offset shadows over a 2px ink frame: the classic 8-bit card. */
+  --shadow-card: 0 0 0 2px #10201f, 4px 4px 0 rgb(3 26 24 / 0.42);
+  --shadow-card-hover: 0 0 0 2px #10201f, 7px 7px 0 rgb(3 26 24 / 0.48);
+  --shadow-lift: 0 0 0 2px #10201f, 9px 9px 0 rgb(2 22 20 / 0.5);
+  --shadow-pill: 0 0 0 2px #10201f, 4px 4px 0 rgb(0 20 18 / 0.45);
+  --shadow-pop: 0 0 0 2px #10201f, 6px 6px 0 rgb(2 22 20 / 0.5);
+
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite alternate;
+  --animate-breathe: breathe 8s ease-in-out infinite;
+
+  /* Motion: CSS durations and easings. Springs live in src/app/motion.ts. */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 320ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgb(139 92 246 / 0.55); }
+    50% { box-shadow: 0 0 0 4px rgb(139 92 246 / 0); }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(0.94); opacity: 0.55; }
+    50% { transform: scale(1.06); opacity: 0.9; }
+  }
+  @keyframes drift {
+    from { transform: translate3d(-6%, -4%, 0) scale(1); }
+    to { transform: translate3d(6%, 4%, 0) scale(1.12); }
+  }
+}
+
+@layer base {
+  html {
+    background-color: #04332f;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    min-height: 100dvh;
+    /* A pixel grid over a teal screen, fixed so it reads as one surface. */
+    background-color: #04332f;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px),
+      linear-gradient(180deg, #043f3a 0%, #065f58 55%, #0a7d72 100%);
+    background-size: 24px 24px, 24px 24px, 100% 100%;
+    background-attachment: fixed;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+  /* Faint CRT scanlines, behind the page content. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg, rgb(0 0 0 / 0.09) 0 1px, transparent 1px 3px);
+  }
+  ::selection {
+    background: var(--color-coin);
+    color: #10201f;
+  }
+  /* Display type is a chunky pixel font: never let it wrap mid-word tightly. */
+  .font-display {
+    letter-spacing: 0;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-coin);
+    outline-offset: 2px;
+  }
+  .on-light :focus-visible {
+    outline-color: var(--color-teal-700);
+  }
+  /* The style guide pins states on with data-force. */
+  [data-force='focus'] {
+    outline: 2px solid rgb(255 255 255 / 0.85);
+    outline-offset: 2px;
+  }
+  .on-light [data-force='focus'] {
+    outline-color: var(--color-teal-700);
+  }
+  [data-force='active'] {
+    transform: scale(0.97) !important;
+  }
+  /* Field controls draw their own focus ring. */
+  .on-light input:focus-visible {
+    outline: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* The day row: snap to columns, fade out at both edges, no scrollbar. */
+@utility board-scroller {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--board-pad);
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &[data-panning='true'] {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Horizontal strips on phones: swipeable without a scrollbar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Chunky pixel helpers. */
+@utility pixelated {
+  image-rendering: pixelated;
+}
+
+/* Notches cut across a bar so it reads as a row of blocks. */
+@utility pixel-stripes {
+  background-image: repeating-linear-gradient(90deg, transparent 0 6px, rgb(0 20 18 / 0.35) 6px 8px);
+}
+
+/* Printing the week: drop the teal page and every control. */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #10201f;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
