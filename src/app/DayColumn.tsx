@@ -57,7 +57,7 @@ export function DayColumn({
       transition={{ ...spring, delay: entrance.active ? 0.35 + columnDelay : 0 }}
       className={cx(
         'group/col relative flex shrink-0 flex-col rounded-column pt-[13px] transition-[background-color,box-shadow] duration-200',
-        fluid ? 'min-h-[220px] w-full min-w-0 px-[11px]' : 'w-(--col-w) snap-start px-[15px]',
+        fluid ? 'min-h-[128px] w-full min-w-0 px-[11px] sm:min-h-[220px]' : 'w-(--col-w) snap-start px-[15px]',
         hot
           ? 'bg-column-hot shadow-[inset_0_0_0_2px_rgb(255_255_255/0.65),4px_4px_0_rgb(2_22_20/0.3)]'
           : over

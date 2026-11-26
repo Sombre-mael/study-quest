@@ -61,12 +61,15 @@ export function Hero({ onStart, compact = false }: { onStart: () => void; compac
         initial="hidden"
         animate="show"
         custom={2}
-        className="mt-[14px] max-w-[38ch] text-[clamp(17px,1.4vw,19px)] leading-[1.45] text-white/85 max-sm:mt-2.5 max-sm:text-[15px] sm:max-w-none"
+        className={cx(
+          'mt-[14px] max-w-[38ch] text-[clamp(17px,1.4vw,19px)] leading-[1.45] text-white/85 max-sm:mt-2.5 max-sm:text-[15px] sm:max-w-none',
+          compact && 'max-sm:hidden',
+        )}
       >
         {copy.subcopy}
       </motion.p>
-      <motion.div variants={rise} initial="hidden" animate="show" custom={3} className={compact ? 'mt-4' : 'mt-[22px] max-sm:mt-4'}>
-        <Button variant="pill" size={compact ? 'md' : 'lg'} onClick={onStart} className={compact ? 'px-6' : undefined}>
+      <motion.div variants={rise} initial="hidden" animate="show" custom={3} className={compact ? 'mt-4 max-sm:mt-3' : 'mt-[22px] max-sm:mt-4'}>
+        <Button variant="pill" size={compact ? 'sm' : 'lg'} onClick={onStart} className={compact ? 'px-5' : undefined}>
           {copy.cta}
         </Button>
       </motion.div>
