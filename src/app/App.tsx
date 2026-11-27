@@ -7,7 +7,7 @@ import { Toast, type ToastState } from '../components/Toast'
 import { type Item, type Settings, type Subject } from '../data'
 import { addDays, dayLabel, isISODate, todayISO, type ISODate } from '../lib/dates'
 import { formatDuration, uid } from '../lib/format'
-import { gameState, warmUpSubjects, XP_PER_TICK } from '../lib/game'
+import { gameState, rollChest, warmUpSubjects, XP_PER_TICK } from '../lib/game'
 import { readiness, rebalance } from '../lib/insights'
 import type { Plan } from '../lib/plan'
 import { navigate, useRoute } from '../lib/router'
@@ -15,6 +15,7 @@ import { emptyState, sampleState, usePlanner, type State } from '../lib/store'
 import { SubjectsProvider } from '../lib/subjects'
 import { AppHeader, ViewSwitcher, type PlannerView } from './AppHeader'
 import { Board } from './Board'
+import { ChestReveal } from './ChestReveal'
 import { FocusTimer } from './FocusTimer'
 import { LevelUpBanner } from './GameHud'
 import { Hero } from './Hero'
@@ -58,7 +59,7 @@ let lastPlannerPath = '/'
 export function App() {
   const today = useMemo(() => todayISO(), [])
   const [state, dispatch] = usePlanner(today)
-  const { items, subjects, log, settings, bonusXp, warmUp } = state
+  const { items, subjects, log, settings, bonusXp, warmUp, chest, shields } = state
   const route = useRoute()
   const [planOpen, setPlanOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -69,6 +70,7 @@ export function App() {
   const [scrollTarget, setScrollTarget] = useState<{ date: ISODate; n: number } | null>(null)
   const [warmUpOpen, setWarmUpOpen] = useState(false)
   const [levelUp, setLevelUp] = useState<{ level: number; rank: string } | null>(null)
+  const [chestPrize, setChestPrize] = useState<number | null>(null)
   const toastId = useRef(0)
   const stateRef = useRef(state)
   stateRef.current = state
@@ -76,7 +78,17 @@ export function App() {
 
   // One pass over the same study record the planner uses: XP, level, streak,
   // today's quests. Nothing is stored twice, so the game can't drift.
-  const game = useMemo(() => gameState(log, today, bonusXp, warmUp), [log, today, bonusXp, warmUp])
+  const game = useMemo(
+    () => gameState(log, today, { bonusXp, warmUp, goalMinutes: settings.dailyGoal, chest, shields }),
+    [log, today, bonusXp, warmUp, settings.dailyGoal, chest, shields],
+  )
+
+  // Once a day (and after any new study), pay a shield for a missed day or
+  // credit a fresh one. The reducer returns the same state when nothing
+  // changes, so this settles after one pass.
+  useEffect(() => {
+    dispatch({ type: 'streakCheck', today })
+  }, [dispatch, today, log])
   const warmUpPool = useMemo(() => warmUpSubjects(items, log, today, subjects.map((s) => s.id)), [items, log, today, subjects])
 
   // Celebrate crossing a level. The first render only records where we are.
@@ -116,6 +128,15 @@ export function App() {
     },
     [dispatch, notify, today],
   )
+
+  // The prize is banked at once; the reveal is only the staging around it.
+  const openChest = useCallback(() => {
+    if (!game.chest.available) return
+    const xp = rollChest()
+    dispatch({ type: 'chest', date: today, xp })
+    setChestPrize(xp)
+  }, [dispatch, game.chest.available, today])
+  const closeChest = useCallback(() => setChestPrize(null), [])
 
   const remove = useCallback(
     (item: Item) => {
@@ -284,7 +305,15 @@ export function App() {
   } else if (path === '/quests') {
     page = (
       <main id="main" className="relative z-10 flex flex-1 flex-col">
-        <QuestsPage items={items} log={log} today={today} bonusXp={bonusXp} warmUp={warmUp} onPlan={openPlan} onWarmUp={() => setWarmUpOpen(true)} />
+        <QuestsPage
+          items={items}
+          log={log}
+          today={today}
+          game={game}
+          onOpenChest={openChest}
+          onPlan={openPlan}
+          onWarmUp={() => setWarmUpOpen(true)}
+        />
       </main>
     )
   } else if (path === '/subjects') {
@@ -338,7 +367,7 @@ export function App() {
             onSample={loadSample}
           />
           {page}
-          <MobileTabBar path={path} />
+          <MobileTabBar path={path} chestReady={game.chest.available} />
         </div>
 
         <AnimatePresence>
@@ -428,6 +457,7 @@ export function App() {
 
         <Toast toast={toast} onDismiss={dismissToast} />
         <LevelUpBanner level={levelUp} />
+        <ChestReveal prize={chestPrize} onDone={closeChest} />
       </SubjectsProvider>
     </MotionConfig>
   )

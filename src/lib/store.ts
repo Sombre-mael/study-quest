@@ -13,7 +13,8 @@ import {
 } from '../data'
 import type { ISODate } from './dates'
 import { uid } from './format'
-import { emptyWarmUp, WARM_UP_DAILY_LIMIT, type WarmUp } from './game'
+import { noShields, resolveStreak, type Shields } from './insights'
+import { emptyWarmUp, WARM_UP_DAILY_LIMIT, type Chest, type WarmUp } from './game'
 
 // Everything lives in this browser's localStorage under one key. Swap load and
 // the save effect for API calls to keep plans in a database instead.
@@ -29,6 +30,10 @@ export type State = {
   bonusXp: number
   /** Today's paid warm-up games. */
   warmUp: WarmUp
+  /** The last daily chest opened, kept so it can't pay twice a day. */
+  chest: Chest | null
+  /** Streak shields and the days they already saved. */
+  shields: Shields
 }
 
 export type Action =
@@ -40,6 +45,10 @@ export type Action =
   | { type: 'logFocus'; subject: string; minutes: number; date: ISODate; itemId?: string }
   /** A cleared warm-up: pays XP while the daily limit lasts. */
   | { type: 'warmUp'; date: ISODate; xp: number }
+  /** Opening the daily chest. */
+  | { type: 'chest'; date: ISODate; xp: number }
+  /** Spends a shield on a missed day, or credits a new 7-day milestone. */
+  | { type: 'streakCheck'; today: ISODate }
   | { type: 'subject.save'; subject: Subject }
   | { type: 'subject.remove'; id: string }
   | { type: 'settings'; patch: Partial<Settings> }
@@ -134,6 +143,17 @@ export function reducer(state: State, action: Action): State {
       if (plays >= WARM_UP_DAILY_LIMIT || action.xp <= 0) return state
       return { ...state, bonusXp: state.bonusXp + action.xp, warmUp: { date: action.date, plays: plays + 1 } }
     }
+    case 'streakCheck': {
+      const shields = resolveStreak(state.log, action.today, state.shields).shields
+      const before = state.shields
+      const same = shields.available === before.available && shields.milestones === before.milestones && shields.frozen.join() === before.frozen.join()
+      return same ? state : { ...state, shields }
+    }
+    case 'chest': {
+      // One chest a day: the date is the lock.
+      if (action.xp <= 0 || state.chest?.date === action.date) return state
+      return { ...state, bonusXp: state.bonusXp + action.xp, chest: { date: action.date, xp: action.xp } }
+    }
     case 'logFocus':
       if (action.minutes <= 0) return state
       return {
@@ -165,39 +185,66 @@ export function reducer(state: State, action: Action): State {
 }
 
 export function sampleState(today: ISODate): State {
-  return { items: seedItems(today), subjects: seedSubjects, log: seedLog(today), settings: defaultSettings, bonusXp: 0, warmUp: emptyWarmUp }
+  return { items: seedItems(today), subjects: seedSubjects, log: seedLog(today), settings: defaultSettings, bonusXp: 0, warmUp: emptyWarmUp, chest: null, shields: noShields }
 }
 
 export function emptyState(subjects: Subject[] = seedSubjects, settings: Settings = defaultSettings): State {
-  return { items: [], subjects, log: [], settings, bonusXp: 0, warmUp: emptyWarmUp }
+  return { items: [], subjects, log: [], settings, bonusXp: 0, warmUp: emptyWarmUp, chest: null, shields: noShields }
+}
+
+/** Where an unreadable save is parked before a fresh plan takes its place. */
+const UNREADABLE_KEY = `${KEY}:unreadable`
+
+function read(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    // Private mode or blocked storage: read as nothing.
+    return null
+  }
+}
+
+function parse(raw: string): Partial<State> | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<State>
+    return parsed && typeof parsed === 'object' ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+function savedState(parsed: Partial<State> | null): State | null {
+  if (!parsed || !Array.isArray(parsed.items) || !Array.isArray(parsed.subjects)) return null
+  return {
+    items: parsed.items,
+    subjects: parsed.subjects,
+    log: Array.isArray(parsed.log) ? parsed.log : [],
+    settings: { ...defaultSettings, ...parsed.settings },
+    bonusXp: typeof parsed.bonusXp === 'number' ? parsed.bonusXp : 0,
+    warmUp: parsed.warmUp ?? emptyWarmUp,
+    chest: parsed.chest ?? null,
+    shields: parsed.shields ?? noShields,
+  }
 }
 
 function load(today: ISODate): State {
-  try {
-    const raw = localStorage.getItem(KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<State>
-      if (Array.isArray(parsed.items) && Array.isArray(parsed.subjects)) {
-        return {
-          items: parsed.items,
-          subjects: parsed.subjects,
-          log: Array.isArray(parsed.log) ? parsed.log : [],
-          settings: { ...defaultSettings, ...parsed.settings },
-          bonusXp: typeof parsed.bonusXp === 'number' ? parsed.bonusXp : 0,
-          warmUp: parsed.warmUp ?? emptyWarmUp,
-        }
-      }
+  const fresh = () => (seedForNewUsers ? sampleState(today) : emptyState())
+  const raw = read(KEY)
+  if (raw) {
+    const saved = savedState(parse(raw))
+    if (saved) return saved
+    // A save we cannot read is parked, never replaced in place by a fresh plan.
+    try {
+      if (!read(UNREADABLE_KEY)) localStorage.setItem(UNREADABLE_KEY, raw)
+    } catch {
+      // Storage full or blocked: nothing to keep the copy with.
     }
-    // Round-one saves only had cards; keep them and add the default subjects.
-    const legacy = localStorage.getItem(LEGACY_KEY)
-    if (legacy) {
-      const parsed = JSON.parse(legacy) as { items?: Item[] }
-      if (Array.isArray(parsed.items)) return { ...emptyState(), items: parsed.items }
-    }
-  } catch {
-    // Private mode or corrupt data: fall back to a fresh start.
+    return fresh()
   }
-  return seedForNewUsers ? sampleState(today) : emptyState()
+  // Round-one saves only had cards; keep them and add the default subjects.
+  const legacy = read(LEGACY_KEY)
+  const old = legacy ? parse(legacy) : null
+  return old && Array.isArray(old.items) ? { ...emptyState(), items: old.items } : fresh()
 }
 
 export function usePlanner(today: ISODate) {

@@ -1,6 +1,8 @@
-import { Flame, Sparkles } from 'lucide-react'
+import { Flame, Gift, Shield, Sparkles } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 
+import { ProgressRing } from '../components/ProgressRing'
+import { cx } from '../lib/cx'
 import type { GameState } from '../lib/game'
 import { Link } from '../lib/router'
 
@@ -11,7 +13,9 @@ import { Link } from '../lib/router'
  */
 export function GameHud({ game }: { game: GameState }) {
   const { level, streak } = game
-  const label = `Niveau ${level.level}, ${level.rank}. ${level.into} XP sur ${level.span} avant le niveau ${level.level + 1}. Série de ${streak.days} jours. Ouvrir le journal de quêtes.`
+  const shields = game.shields.available
+  const gel = `${shields} gel${shields > 1 ? 's' : ''} de série`
+  const label = `Niveau ${level.level}, ${level.rank}. ${level.into} XP sur ${level.span} avant le niveau ${level.level + 1}. Série de ${streak.days} jours. ${gel}. Objectif du jour : ${game.goal.minutes} minutes sur ${game.goal.target}${game.chest.available ? ', coffre à ouvrir' : ''}. Ouvrir le journal de quêtes.`
   return (
     <>
       <Link
@@ -41,13 +45,48 @@ export function GameHud({ game }: { game: GameState }) {
           <Flame size={13} aria-hidden className="text-[#ffd8a8]" />
           {streak.days}
         </span>
+        <span className="inline-flex items-center gap-1.5 border-l border-white/25 pl-2.5">
+          <ProgressRing value={game.goal.ratio} size={20} stroke={3} color={game.goal.done ? '#7ce0d3' : '#ffd166'} track="rgb(255 255 255 / 0.22)" />
+          <span className="text-[11.5px] font-semibold text-white/90 tabular-nums">
+            {game.goal.minutes}/{game.goal.target}
+          </span>
+        </span>
+        <span
+          className={cx(
+            'inline-flex items-center gap-1 text-[11.5px] font-semibold tabular-nums',
+            shields > 0 ? 'text-[#bfeee7]' : 'text-white/45',
+          )}
+          title={shields > 0 ? `${gel} : ta série survivra à un jour manqué` : 'Aucun gel de série : un bouclier tous les 7 jours d’affilée'}
+        >
+          <Shield size={13} aria-hidden />
+          {shields}
+        </span>
       </Link>
 
-      <Link
-        href="/quests"
-        aria-label={label}
-                className="grid size-9 shrink-0 place-items-center rounded-[2px] bg-[#ffd166] text-[#10201f] shadow-[inset_0_0_0_2px_#10201f] md:hidden">
-        <span className="font-display text-[10px]">{level.level}</span>
+      {/* Phones get the level plus today's goal: the ring and the numbers are
+          the only view of it outside the quest log, which the tab bar hides. */}
+      <Link href="/quests" aria-label={label} className="flex min-w-0 shrink-0 items-center gap-1.5 md:hidden">
+        <span className="grid size-9 shrink-0 place-items-center rounded-[2px] bg-[#ffd166] text-[#10201f] shadow-[inset_0_0_0_2px_#10201f]">
+          <span className="font-display text-[10px]">{level.level}</span>
+        </span>
+        <span
+          className={cx(
+            'flex shrink-0 items-center gap-1.5 rounded-[2px] py-1 pr-2 pl-1.5 text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.22)]',
+            game.chest.available ? 'bg-[#ffd166]/22' : 'bg-white/10',
+          )}
+        >
+          <ProgressRing
+            value={game.goal.ratio}
+            size={18}
+            stroke={3}
+            color={game.chest.available || game.goal.done ? '#ffd166' : '#7ce0d3'}
+            track="rgb(255 255 255 / 0.28)"
+          />
+          <span className="text-[11.5px] leading-none font-semibold tabular-nums">
+            {game.goal.minutes}/{game.goal.target}
+          </span>
+          {game.chest.available && <Gift size={12} aria-hidden className="text-[#ffd166]" />}
+        </span>
       </Link>
     </>
   )

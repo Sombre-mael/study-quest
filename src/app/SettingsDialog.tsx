@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '../components/Button'
 import { Dialog } from '../components/Dialog'
 import { FieldGroup, Segmented } from '../components/Field'
-import { breakOptions, dailyLimitOptions, focusOptions, type Settings } from '../data'
+import { breakOptions, dailyGoalOptions, dailyLimitOptions, focusOptions, type Settings } from '../data'
 import { formatDuration } from '../lib/format'
 
 /** Daily limit and the focus timer's rhythm. */
@@ -28,7 +28,7 @@ export function SettingsDialog({
       open={open}
       onClose={onClose}
       title="Réglages du planning"
-      description="Une limite quotidienne signale les journées trop chargées. Le minuteur découpe chaque séance en blocs avec des pauses."
+      description="Une limite quotidienne signale les journées trop chargées ; l’objectif du jour débloque le coffre. Le minuteur découpe chaque séance en blocs avec des pauses."
       footer={
         <>
           <Button variant="ghost" onClick={onClose} className="ml-auto">
@@ -47,6 +47,9 @@ export function SettingsDialog({
             onChange={(v) => setDraft((d) => ({ ...d, dailyLimit: v }))}
             format={(v) => (v ? formatDuration(v).replace(' min', ' min') : 'Aucune')}
           />
+        </FieldGroup>
+        <FieldGroup label="Objectif du jour" hint="Atteindre cet objectif débloque le coffre du jour">
+          <Segmented name="Objectif du jour" value={draft.dailyGoal} options={dailyGoalOptions} onChange={(v) => setDraft((d) => ({ ...d, dailyGoal: v }))} format={(v) => `${v} min`} />
         </FieldGroup>
         <FieldGroup label="Bloc de concentration">
           <Segmented name="Bloc de concentration" value={draft.focusMinutes} options={focusOptions} onChange={(v) => setDraft((d) => ({ ...d, focusMinutes: v }))} format={(v) => `${v} min`} />

@@ -1,6 +1,6 @@
 import type { Item, LogEntry } from '../data'
 import { diffDays, type ISODate } from './dates'
-import { readiness, streak } from './insights'
+import { minutesOn, noShields, readiness, resolveStreak, streak, type Shields } from './insights'
 
 // The game layer on top of the planner. Everything here is derived from the
 // same study record the rest of the app uses (log + items), so a level or a
@@ -208,6 +208,65 @@ export function warmUpReward(moves: number, pairs: number): number {
   return Math.max(10, 50 - Math.max(0, moves - pairs * 2) * 4)
 }
 
+export type DailyGoal = {
+  minutes: number
+  target: number
+  /** 0..1 towards the goal. */
+  ratio: number
+  percent: number
+  remaining: number
+  done: boolean
+}
+
+/** Minutes studied today, measured against the daily goal. */
+export function dailyGoalState(log: LogEntry[], today: ISODate, target = 30): DailyGoal {
+  const goal = Math.max(1, Math.round(target))
+  const minutes = minutesOn(log, today)
+  return {
+    minutes,
+    target: goal,
+    ratio: Math.min(1, minutes / goal),
+    percent: Math.min(100, Math.round((minutes / goal) * 100)),
+    remaining: Math.max(0, goal - minutes),
+    done: minutes >= goal,
+  }
+}
+
+/** The day's chest: opened at most once a day, for a variable prize. */
+export type Chest = { date: ISODate; xp: number }
+
+/** Weighted prizes, so the chest reads as a roll and not a fixed wage. */
+const CHEST_PRIZES: Array<[xp: number, weight: number]> = [
+  [40, 4],
+  [50, 4],
+  [60, 3],
+  [80, 2],
+  [100, 2],
+  [140, 1],
+]
+
+/** Every amount a chest can pay, for the reveal's flicker. */
+export const chestPrizes = CHEST_PRIZES.map(([xp]) => xp)
+
+/** Roll one chest prize. `random` is injectable so the odds stay testable. */
+export function rollChest(random: () => number = Math.random): number {
+  const total = CHEST_PRIZES.reduce((sum, [, weight]) => sum + weight, 0)
+  let n = random() * total
+  for (const [xp, weight] of CHEST_PRIZES) {
+    n -= weight
+    if (n < 0) return xp
+  }
+  return CHEST_PRIZES[0]![0]
+}
+
+export type ChestState = {
+  /** The goal is met and the chest has not been opened yet today. */
+  available: boolean
+  opened: boolean
+  /** Prize paid today, 0 until it is opened. */
+  xp: number
+}
+
 /** How many warm-up games paid out today, keyed by day so it resets itself. */
 export type WarmUp = { date: ISODate; plays: number }
 
@@ -227,13 +286,49 @@ export type GameState = {
   boost: number
   /** Warm-up games still paying XP today. */
   warmUpLeft: number
+  /** Today against the daily goal. */
+  goal: DailyGoal
+  /** Whether today's chest can be opened. */
+  chest: ChestState
+  /** Streak shields, with today's missed days already paid for. */
+  shields: Shields
+  /** Days until the next shield, null when the stock is full. */
+  nextShieldIn: number | null
 }
 
 /** Everything the HUD, the quest log and the level-up banner need, in one pass. */
-export function gameState(log: LogEntry[], today: ISODate, bonusXp = 0, warmUp?: WarmUp): GameState {
+export type GameInputs = {
+  /** XP won outside the study log (warm-ups, chest). */
+  bonusXp?: number
+  warmUp?: WarmUp
+  goalMinutes?: number
+  /** The last chest opened, if any. */
+  chest?: Chest | null
+  shields?: Shields
+}
+
+/** Everything the HUD, the quest log and the level-up banner need, in one pass. */
+export function gameState(log: LogEntry[], today: ISODate, inputs: GameInputs = {}): GameState {
+  const { bonusXp = 0, warmUp, goalMinutes = 30, chest, shields = noShields } = inputs
   const quests = dailyQuests(log, today)
   const questXp = quests.reduce((a, q) => a + (q.done ? q.xp : 0), 0)
   const xp = totalXp(log, bonusXp) + questXp
-  const s = streak(log, today)
-  return { quests, questXp, xp, level: levelProgress(xp), streak: s, boost: streakBoost(s.days), warmUpLeft: warmUpLeft(warmUp, today) }
+  const run = resolveStreak(log, today, shields)
+  const goal = dailyGoalState(log, today, goalMinutes)
+  const opened = chest?.date === today
+  return {
+    quests,
+    questXp,
+    xp,
+    level: levelProgress(xp),
+    streak: { days: run.days, studiedToday: run.studiedToday },
+    boost: streakBoost(run.days),
+    warmUpLeft: warmUpLeft(warmUp, today),
+    goal,
+    chest: { available: goal.done && !opened, opened, xp: opened ? chest.xp : 0 },
+    shields: run.shields,
+    nextShieldIn: run.nextIn,
+  }
 }
+
+export { resolveStreak, STREAK_DAYS_PER_SHIELD, MAX_STREAK_SHIELDS } from './insights'

@@ -155,13 +155,16 @@ export type LogEntry = {
 export type Settings = {
   /** Most minutes a day should hold. 0 turns the limit off. */
   dailyLimit: number
+  /** Minutes of study that count as a good day and unlock the chest. */
+  dailyGoal: number
   focusMinutes: number
   breakMinutes: number
 }
 
-export const defaultSettings: Settings = { dailyLimit: 120, focusMinutes: 25, breakMinutes: 5 }
+export const defaultSettings: Settings = { dailyLimit: 120, dailyGoal: 30, focusMinutes: 25, breakMinutes: 5 }
 
 export const dailyLimitOptions = [0, 60, 90, 120, 180, 240]
+export const dailyGoalOptions = [10, 15, 20, 30, 45, 60]
 export const focusOptions = [15, 25, 45, 50]
 export const breakOptions = [5, 10, 15]
 

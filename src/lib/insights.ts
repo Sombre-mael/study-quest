@@ -70,17 +70,86 @@ export function readiness(test: Item, items: Item[], log: LogEntry[], today: ISO
   return { done: Math.min(1, studied / target), planned: Math.min(1, (studied + ahead) / target), target, studied }
 }
 
+/** Days of streak that earn one shield. */
+export const STREAK_DAYS_PER_SHIELD = 7
+/** Shields held at once. Spare ones earned at the cap are lost. */
+export const MAX_STREAK_SHIELDS = 2
+/**
+ * How far back a shield may pay for a missed day. A gap older than this is
+ * history: the run already restarted after it, so rewriting it would inflate
+ * the streak with study from before the break.
+ */
+export const STREAK_FREEZE_WINDOW_DAYS = 7
+
+/** The streak shields a planner owns. */
+export type Shields = {
+  /** Shields left to spend. */
+  available: number
+  /** 7-day milestones already credited, so a spent shield is not re-earned. */
+  milestones: number
+  /** Days a shield already covered; they keep the run alive without counting. */
+  frozen: ISODate[]
+}
+
+export const noShields: Shields = { available: 0, milestones: 0, frozen: [] }
+
+export type StreakInfo = {
+  days: number
+  studiedToday: boolean
+  shields: Shields
+  /** Days until the next shield, or null when the stock is full. */
+  nextIn: number | null
+}
+
+/**
+ * The current run, with shields spent on missed days. Walking backwards stops
+ * at the first day that is neither studied nor already frozen, unless a shield
+ * can pay for it. Frozen days never add to the count: they only keep it alive.
+ * Milestones are credited once, so spending a shield does not earn it straight
+ * back.
+ */
+export function resolveStreak(log: LogEntry[], today: ISODate, current: Shields = noShields): StreakInfo {
+  const studied = new Set(log.filter((l) => l.minutes > 0).map((l) => l.date))
+  const studiedToday = studied.has(today)
+  const frozen = new Set(current.frozen)
+  let available = Math.max(0, Math.floor(current.available))
+  let days = 0
+  let d = studiedToday ? today : addDays(today, -1)
+  // A year and a bit of history is plenty; the loop never runs forever.
+  for (let i = 0; i < 420; i++) {
+    if (studied.has(d)) {
+      days++
+      d = addDays(d, -1)
+      continue
+    }
+    if (frozen.has(d)) {
+      d = addDays(d, -1)
+      continue
+    }
+    if (available > 0 && diffDays(today, d) <= STREAK_FREEZE_WINDOW_DAYS) {
+      available--
+      frozen.add(d)
+      d = addDays(d, -1)
+      continue
+    }
+    break
+  }
+  const milestones = Math.floor(days / STREAK_DAYS_PER_SHIELD)
+  if (milestones > current.milestones) {
+    available = Math.min(MAX_STREAK_SHIELDS, available + (milestones - current.milestones))
+  }
+  return {
+    days,
+    studiedToday,
+    shields: { available, milestones: Math.max(current.milestones, milestones), frozen: [...frozen].sort() },
+    nextIn: available >= MAX_STREAK_SHIELDS ? null : STREAK_DAYS_PER_SHIELD - (days % STREAK_DAYS_PER_SHIELD),
+  }
+}
+
 /** Days in a row, ending today or yesterday, with any logged study. */
 export function streak(log: LogEntry[], today: ISODate): { days: number; studiedToday: boolean } {
-  const days = new Set(log.filter((l) => l.minutes > 0).map((l) => l.date))
-  const studiedToday = days.has(today)
-  let d = studiedToday ? today : addDays(today, -1)
-  let n = 0
-  while (days.has(d)) {
-    n++
-    d = addDays(d, -1)
-  }
-  return { days: n, studiedToday }
+  const { days, studiedToday } = resolveStreak(log, today)
+  return { days, studiedToday }
 }
 
 export function minutesBySubject(log: LogEntry[], from: ISODate | null, to: ISODate): Map<string, number> {

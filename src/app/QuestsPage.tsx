@@ -1,4 +1,4 @@
-import { Check, Compass, Flame, Gamepad2, Hourglass, Lock, Sparkles, Swords, Target, Trophy, type LucideIcon } from 'lucide-react'
+import { Check, Compass, Flame, Gamepad2, Gift, Hourglass, Lock, Shield, Sparkles, Swords, Target, Trophy, type LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
 
@@ -6,12 +6,21 @@ import { Button } from '../components/Button'
 import { EmptyState } from '../components/EmptyState'
 import { PageHeader } from '../components/PageHeader'
 import { Panel } from '../components/Panel'
+import { ProgressRing } from '../components/ProgressRing'
 import { SubjectChip } from '../components/SubjectChip'
 import { copy, type Item, type LogEntry } from '../data'
 import { cx } from '../lib/cx'
 import { dayLabel, type ISODate } from '../lib/dates'
 import { formatDuration } from '../lib/format'
-import { badgesFor, bossesFor, gameState, WARM_UP_DAILY_LIMIT, type BadgeIcon, type WarmUp } from '../lib/game'
+import {
+  badgesFor,
+  bossesFor,
+  MAX_STREAK_SHIELDS,
+  STREAK_DAYS_PER_SHIELD,
+  WARM_UP_DAILY_LIMIT,
+  type BadgeIcon,
+  type GameState,
+} from '../lib/game'
 import { countdown } from '../lib/insights'
 import { PageShell } from './PageShell'
 
@@ -29,20 +38,20 @@ export function QuestsPage({
   items,
   log,
   today,
-  bonusXp,
-  warmUp,
+  game,
+  onOpenChest,
   onPlan,
   onWarmUp,
 }: {
   items: Item[]
   log: LogEntry[]
   today: ISODate
-  bonusXp: number
-  warmUp: WarmUp
+  /** Computed once in App, so the page never rebuilds the game state. */
+  game: GameState
+  onOpenChest: () => void
   onPlan: () => void
   onWarmUp: () => void
 }) {
-  const game = useMemo(() => gameState(log, today, bonusXp, warmUp), [log, today, bonusXp, warmUp])
   const badges = useMemo(() => badgesFor(items, log, today), [items, log, today])
   const bosses = useMemo(() => bossesFor(items, log, today), [items, log, today])
   const earned = badges.filter((b) => b.earned).length
@@ -106,6 +115,116 @@ export function QuestsPage({
             <MiniStat icon={Flame} label="Série" value={`${streak.days} j`} note={`bonus ×${boost}`} />
             <MiniStat icon={Check} label="Quêtes" value={`${cleared}/${game.quests.length}`} note="aujourd’hui" />
             <MiniStat icon={Trophy} label="Badges" value={`${earned}/${badges.length}`} note="obtenus" />
+          </div>
+        </div>
+      </Panel>
+
+      <Panel
+        className="mt-3.5"
+        title="Objectif du jour"
+        action={
+          <span className="text-[13px] text-ink-soft tabular-nums">
+            {game.goal.minutes} / {game.goal.target} min
+          </span>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
+          <ProgressRing value={game.goal.ratio} size={64} stroke={7} color={game.goal.done ? '#166534' : '#0b8078'} label={`Objectif du jour : ${game.goal.percent} %`}>
+            <span className="font-display text-[10px] leading-none">{game.goal.percent}%</span>
+          </ProgressRing>
+
+          <div className="min-w-[200px] flex-1">
+            <p className="text-[14.5px] font-medium">
+              {game.goal.done
+                ? `Objectif atteint : ${formatDuration(game.goal.minutes)} aujourd’hui.`
+                : `Encore ${formatDuration(game.goal.remaining)} pour valider ton objectif.`}
+            </p>
+            <p className="mt-2 text-[12.5px] text-ink-soft">
+              {game.goal.done
+                ? game.chest.opened
+                  ? 'Coffre ouvert. Reviens demain : ta série se joue tous les jours.'
+                  : 'Ton coffre t’attend : ouvre-le pour un bonus d’XP aléatoire.'
+                : game.goal.minutes === 0
+                  ? 'Astuce : lance une séance de 5 minutes. Commencer est la partie la plus dure.'
+                  : 'Astuce : une séance courte suffit pour faire avancer ton objectif.'}
+            </p>
+          </div>
+
+          {game.chest.opened ? (
+            <div className="min-w-[150px] rounded-[2px] bg-[#eef6f5] px-4 py-3 text-center shadow-[inset_0_0_0_1px_#d3e8e5]">
+              <p className="text-[10.5px] font-semibold tracking-[0.12em] text-teal-700 uppercase">Coffre ouvert</p>
+              <p className="text-[19px] leading-tight font-bold text-[#166534] tabular-nums">+{game.chest.xp} XP</p>
+              <p className="text-[12px] text-ink-soft">Reviens demain</p>
+            </div>
+          ) : game.chest.available ? (
+            <Button variant="pill" size="md" onClick={onOpenChest} className="px-5">
+              <Gift />
+              Ouvrir le coffre
+            </Button>
+          ) : (
+            <div className="text-center">
+              <Button variant="secondary" size="md" disabled>
+                <Lock />
+                Coffre verrouillé
+              </Button>
+              <p className="mt-1 text-[11.5px] text-ink-soft tabular-nums">
+                À {formatDuration(game.goal.remaining)} de l’ouverture
+              </p>
+            </div>
+          )}
+        </div>
+      </Panel>
+
+      <Panel
+        className="mt-3.5"
+        title="Gel de série"
+        action={
+          <span className="text-[13px] text-ink-soft tabular-nums">
+            {game.shields.available} / {MAX_STREAK_SHIELDS} boucliers
+          </span>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
+          <span
+            className={cx(
+              'grid size-12 shrink-0 place-items-center rounded-[2px]',
+              game.shields.available > 0 ? 'bg-teal-700 text-white' : 'bg-[#e6eded] text-[#8d9a99]',
+            )}
+          >
+            <Shield size={22} aria-hidden />
+          </span>
+
+          <div className="min-w-[220px] flex-1">
+            <p className="text-[14.5px] font-medium">
+              {game.shields.available > 0
+                ? `${game.shields.available} bouclier${game.shields.available > 1 ? 's' : ''} prêt${game.shields.available > 1 ? 's' : ''} à sauver ta série.`
+                : 'Aucun bouclier pour l’instant.'}
+            </p>
+            <p className="mt-0.5 text-[12.5px] leading-[1.5] text-ink-soft">
+              Un bouclier tous les {STREAK_DAYS_PER_SHIELD} jours d’affilée, {MAX_STREAK_SHIELDS} au maximum. Il se dépense tout seul le jour où tu
+              ne révises pas : ta série continue, mais ce jour ne compte pas.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: MAX_STREAK_SHIELDS }, (_, i) => (
+              <span
+                key={i}
+                aria-hidden
+                className={cx(
+                  'grid size-9 place-items-center rounded-[2px]',
+                  i < game.shields.available
+                    ? 'bg-[#eef6f5] text-teal-700 shadow-[inset_0_0_0_2px_#0b8078]'
+                    : 'bg-[#f4f7f6] text-[#c2cccb] shadow-[inset_0_0_0_2px_#e2e8e7]',
+                )}
+              >
+                <Shield size={17} />
+              </span>
+            ))}
+            <span className="ml-1 text-[12.5px] text-ink-soft tabular-nums">
+              {game.nextShieldIn === null ? 'Stock plein' : `Prochain dans ${game.nextShieldIn} j`}
+              {game.shields.frozen.length > 0 && ` · ${game.shields.frozen.length} jour${game.shields.frozen.length > 1 ? 's' : ''} protégé${game.shields.frozen.length > 1 ? 's' : ''}`}
+            </span>
           </div>
         </div>
       </Panel>
