@@ -18,7 +18,7 @@ export function DurationPill({ minutes, done }: { minutes: number; done?: boolea
     <Pill className={done ? 'bg-[#e3f5ec] text-[#166534]' : 'bg-lavender text-lavender-ink'}>
       {done && <Check size={13} strokeWidth={2.6} />}
       {formatDuration(minutes)}
-      {done && <span className="sr-only">, done</span>}
+      {done && <span className="sr-only">, faite</span>}
     </Pill>
   )
 }
@@ -28,7 +28,7 @@ export function TestPill() {
   return (
     <Pill className="bg-flag pl-[10px] text-flag-ink">
       <Flag size={13} strokeWidth={2.2} />
-      Test
+      Contrôle
     </Pill>
   )
 }
@@ -38,7 +38,7 @@ export function OverPill({ minutes }: { minutes: number }) {
   return (
     <Pill className="bg-flag pl-[9px] text-[12.5px] text-flag-ink">
       <AlertTriangle size={12} strokeWidth={2.4} />
-      {formatDuration(minutes)} over
+      {formatDuration(minutes)} de trop
     </Pill>
   )
 }

@@ -96,11 +96,11 @@ export function minutesOn(log: LogEntry[], date: ISODate): number {
   return log.reduce((a, l) => a + (l.date === date ? l.minutes : 0), 0)
 }
 
-/** "today", "tomorrow", "in 5 days", "2 days ago". */
+/** "aujourd'hui", "demain", "dans 5 jours", "il y a 2 jours". */
 export function countdown(date: ISODate, today: ISODate): string {
   const n = diffDays(date, today)
-  if (n === 0) return 'today'
-  if (n === 1) return 'tomorrow'
-  if (n === -1) return 'yesterday'
-  return n > 0 ? `in ${n} days` : `${-n} days ago`
+  if (n === 0) return 'aujourd’hui'
+  if (n === 1) return 'demain'
+  if (n === -1) return 'hier'
+  return n > 0 ? `dans ${n} jours` : `il y a ${-n} jours`
 }

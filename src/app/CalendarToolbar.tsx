@@ -25,10 +25,10 @@ export function CalendarToolbar({
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 px-(--board-pad) pb-3">
       <div className="flex items-center gap-1">
-        <IconButton tone="dark" label={`Previous ${unit}`} onClick={onPrev}>
+        <IconButton tone="dark" label={unit === 'week' ? 'Semaine précédente' : 'Mois précédent'} onClick={onPrev}>
           <ChevronLeft />
         </IconButton>
-        <IconButton tone="dark" label={`Next ${unit}`} onClick={onNext}>
+        <IconButton tone="dark" label={unit === 'week' ? 'Semaine suivante' : 'Mois suivant'} onClick={onNext}>
           <ChevronRight />
         </IconButton>
         <h2 aria-live="polite" className="ml-1.5 text-[17px] font-semibold tracking-[-0.015em] tabular-nums">
@@ -38,7 +38,7 @@ export function CalendarToolbar({
       <div className="flex items-center gap-2">
         {!isCurrent && (
           <Button variant="glass" size="sm" onClick={onToday}>
-            This {unit}
+            {unit === 'week' ? 'Cette semaine' : 'Ce mois'}
           </Button>
         )}
         {extra}

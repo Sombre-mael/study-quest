@@ -100,7 +100,7 @@ export function Board({
     <div
       ref={scroller}
       role="region"
-      aria-label="Study days"
+      aria-label="Jours d’étude"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endPan}

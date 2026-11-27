@@ -23,9 +23,9 @@ export const spring = { type: 'spring', stiffness: 420, damping: 34, mass: 0.9 }
 
 /** Motion tokens. The style guide plays each one. */
 export const motionTokens = {
-  spring: { ...spring, use: 'Cards, columns, moved cards, layout' },
-  springSoft: { type: 'spring', stiffness: 260, damping: 28, mass: 1, use: 'Hero and page titles rising in' },
-  springSnappy: { type: 'spring', stiffness: 500, damping: 30, mass: 1, use: 'Button hover and press' },
-  springDialog: { type: 'spring', stiffness: 380, damping: 32, mass: 1, use: 'Dialogs and sheets' },
-  springChart: { type: 'spring', stiffness: 140, damping: 24, mass: 1, use: 'Bars, rings and meters filling' },
+  spring: { ...spring, use: 'Cartes, colonnes, cartes déplacées, mise en page' },
+  springSoft: { type: 'spring', stiffness: 260, damping: 28, mass: 1, use: 'Titres d’accueil et de page qui montent' },
+  springSnappy: { type: 'spring', stiffness: 500, damping: 30, mass: 1, use: 'Survol et appui des boutons' },
+  springDialog: { type: 'spring', stiffness: 380, damping: 32, mass: 1, use: 'Dialogues et feuilles' },
+  springChart: { type: 'spring', stiffness: 140, damping: 24, mass: 1, use: 'Barres, anneaux et jauges qui se remplissent' },
 } as const

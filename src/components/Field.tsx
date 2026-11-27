@@ -148,7 +148,7 @@ function radioKeys(e: KeyboardEvent<HTMLDivElement>) {
 export function SubjectPicker({ value, onChange }: { value: string; onChange: (s: string) => void }) {
   const { list } = useSubjects()
   return (
-    <div role="radiogroup" aria-label="Subject" onKeyDown={radioKeys} className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+    <div role="radiogroup" aria-label="Matière" onKeyDown={radioKeys} className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
       {list.map((s) => {
         const active = s.id === value
         return (
@@ -174,7 +174,7 @@ export function SubjectPicker({ value, onChange }: { value: string; onChange: (s
 /** Round colour swatches; the chosen one gets a ring and a tick. */
 export function ColorPicker({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
   return (
-    <div role="radiogroup" aria-label="Colour" onKeyDown={radioKeys} className="flex flex-wrap gap-2">
+    <div role="radiogroup" aria-label="Couleur" onKeyDown={radioKeys} className="flex flex-wrap gap-2">
       {subjectColors.map((c) => {
         const on = c.value === value
         return (
@@ -205,7 +205,7 @@ export function ColorPicker({ value, onChange }: { value: string; onChange: (hex
 export function IconPicker({ value, color, onChange }: { value: IconKey; color: string; onChange: (k: IconKey) => void }) {
   const ink = inkFor(color)
   return (
-    <div role="radiogroup" aria-label="Icon" onKeyDown={radioKeys} className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
+    <div role="radiogroup" aria-label="Icône" onKeyDown={radioKeys} className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
       {(Object.keys(subjectIcons) as IconKey[]).map((k) => {
         const Icon = subjectIcons[k]
         const on = k === value

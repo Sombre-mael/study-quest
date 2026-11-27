@@ -138,7 +138,7 @@ export function FocusTimer({
     }
   }, [])
   useEffect(() => {
-    document.title = finished ? `Done · ${item.title}` : `${clock(left)} · ${current.kind === 'focus' ? 'Focus' : 'Break'}`
+    document.title = finished ? `Terminé · ${item.title}` : `${clock(left)} · ${current.kind === 'focus' ? 'Concentration' : 'Pause'}`
   }, [left, finished, current.kind, item.title])
 
   const onBreak = current.kind === 'break' && !finished
@@ -149,7 +149,7 @@ export function FocusTimer({
       ref={panel}
       role="dialog"
       aria-modal="true"
-      aria-label={`Focus timer: ${item.title}`}
+      aria-label={`Minuteur de concentration : ${item.title}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -173,11 +173,11 @@ export function FocusTimer({
           <div className="min-w-0">
             <p className="truncate text-[16px] font-semibold tracking-[-0.015em]">{item.title}</p>
             <p className="text-[13.5px] text-white/85">
-              {formatDuration(item.minutes)} · {focusBlocks} focus {focusBlocks === 1 ? 'block' : 'blocks'}
+              {formatDuration(item.minutes)} · {focusBlocks} {focusBlocks === 1 ? 'bloc de travail' : 'blocs de travail'}
             </p>
           </div>
         </div>
-        <IconButton tone="dark" size="lg" label={finished ? 'Close timer' : 'Leave timer'} onClick={exit}>
+        <IconButton tone="dark" size="lg" label={finished ? 'Fermer le minuteur' : 'Quitter le minuteur'} onClick={exit}>
           <X />
         </IconButton>
       </div>
@@ -195,13 +195,13 @@ export function FocusTimer({
               <ProgressRing value={1} size={168} stroke={8} color="#ffffff" track="rgb(255 255 255 / 0.18)">
                 <Check size={64} strokeWidth={2.4} aria-hidden />
               </ProgressRing>
-              <h1 className="mt-8 text-[clamp(30px,4vw,44px)] font-bold tracking-[-0.03em]">Session complete</h1>
+              <h1 className="mt-8 text-[clamp(30px,4vw,44px)] font-bold tracking-[-0.03em]">Séance terminée</h1>
               <p className="mt-2 max-w-[40ch] text-[16px] leading-[1.5] text-white/88" role="status">
-                {item.title} is marked done. {focusedMinutes > 0 ? `${formatDuration(focusedMinutes)} of focus logged.` : ''}
+                {item.title} est cochée. {focusedMinutes > 0 ? `${formatDuration(focusedMinutes)} de concentration enregistrées.` : ''}
               </p>
               <div className="mt-8">
                 <Button variant="pill" size="lg" onClick={exit} data-autofocus>
-                  Back to planner
+                  Retour au planning
                 </Button>
               </div>
             </motion.div>
@@ -209,19 +209,19 @@ export function FocusTimer({
             <motion.div key="run" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 0.98 }} className="flex flex-col items-center">
               <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/12 px-3.5 py-1.5 text-[14px] font-medium shadow-[inset_0_0_0_1px_rgb(255_255_255/0.18)]">
                 {onBreak ? <Coffee size={15} aria-hidden /> : <span className="size-[7px] animate-pulse-dot rounded-full bg-white" aria-hidden />}
-                {onBreak ? 'Break · stretch, drink some water' : `Focus ${focusIndex} of ${focusBlocks}`}
+                {onBreak ? 'Pause · étire-toi, bois un peu d’eau' : `Concentration ${focusIndex} sur ${focusBlocks}`}
               </p>
               <ProgressRing value={progress} size={300} stroke={6} color="#ffffff" track="rgb(255 255 255 / 0.16)">
                 <span className="flex flex-col items-center">
                   <span className="text-[clamp(56px,9vw,76px)] leading-none font-light tracking-[-0.04em] tabular-nums" aria-hidden>
                     {clock(left)}
                   </span>
-                  <span className="mt-2 text-[14px] text-white/85">{runningSince ? (onBreak ? 'until the next block' : 'left in this block') : 'Paused'}</span>
+                  <span className="mt-2 text-[14px] text-white/85">{runningSince ? (onBreak ? 'avant le prochain bloc' : 'restantes dans ce bloc') : 'En pause'}</span>
                 </span>
               </ProgressRing>
               {/* Screen readers get the time once a minute, not every tick. */}
               <span className="sr-only" aria-live="polite">
-                {Math.ceil(left / MIN)} minutes left{runningSince ? '' : ', paused'}
+                {Math.ceil(left / MIN)} minutes restantes{runningSince ? '' : ', en pause'}
               </span>
 
               <div className="mt-6 flex items-center gap-1.5" aria-hidden>
@@ -236,7 +236,7 @@ export function FocusTimer({
               <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
                 <Button variant="pill" size="lg" onClick={toggle} className="min-w-[160px] px-8" data-autofocus>
                   {runningSince ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
-                  {runningSince ? 'Pause' : 'Resume'}
+                  {runningSince ? 'Pause' : 'Reprendre'}
                 </Button>
                 <Button variant="glass" size="md" onClick={() => setLength((l) => l + 5 * MIN)}>
                   <Plus />5 min
@@ -244,12 +244,12 @@ export function FocusTimer({
                 {onBreak ? (
                   <Button variant="glass" size="md" onClick={() => startBlock(seg + 1)}>
                     <SkipForward />
-                    Skip break
+                    Passer la pause
                   </Button>
                 ) : (
                   <Button variant="glass" size="md" onClick={finishNow}>
                     <Check />
-                    Finish now
+                    Terminer
                   </Button>
                 )}
               </div>
@@ -257,7 +257,7 @@ export function FocusTimer({
           )}
         </AnimatePresence>
       </div>
-      <p className="relative pb-5 text-center text-[13px] text-white/80">Esc leaves the timer and keeps the minutes you focused.</p>
+      <p className="relative pb-5 text-center text-[13px] text-white/80">Échap quitte le minuteur et garde les minutes de concentration.</p>
     </motion.div>,
     document.body,
   )

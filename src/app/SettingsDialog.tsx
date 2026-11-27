@@ -27,32 +27,32 @@ export function SettingsDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Planner settings"
-      description="A daily limit flags days that hold too much. The focus timer splits sessions into blocks with breaks."
+      title="Réglages du planning"
+      description="Une limite quotidienne signale les journées trop chargées. Le minuteur découpe chaque séance en blocs avec des pauses."
       footer={
         <>
           <Button variant="ghost" onClick={onClose} className="ml-auto">
-            Cancel
+            Annuler
           </Button>
-          <Button onClick={() => onSave(draft)}>Save</Button>
+          <Button onClick={() => onSave(draft)}>Enregistrer</Button>
         </>
       }
     >
       <div className="space-y-5 pb-3">
-        <FieldGroup label="Daily limit" hint={draft.dailyLimit ? `${formatDuration(draft.dailyLimit)} a day` : 'Off'}>
+        <FieldGroup label="Limite quotidienne" hint={draft.dailyLimit ? `${formatDuration(draft.dailyLimit)} par jour` : 'Désactivée'}>
           <Segmented
-            name="Daily limit"
+            name="Limite quotidienne"
             value={draft.dailyLimit}
             options={dailyLimitOptions}
             onChange={(v) => setDraft((d) => ({ ...d, dailyLimit: v }))}
-            format={(v) => (v ? formatDuration(v).replace(' min', 'm') : 'Off')}
+            format={(v) => (v ? formatDuration(v).replace(' min', ' min') : 'Aucune')}
           />
         </FieldGroup>
-        <FieldGroup label="Focus block">
-          <Segmented name="Focus block" value={draft.focusMinutes} options={focusOptions} onChange={(v) => setDraft((d) => ({ ...d, focusMinutes: v }))} format={(v) => `${v}m`} />
+        <FieldGroup label="Bloc de concentration">
+          <Segmented name="Bloc de concentration" value={draft.focusMinutes} options={focusOptions} onChange={(v) => setDraft((d) => ({ ...d, focusMinutes: v }))} format={(v) => `${v} min`} />
         </FieldGroup>
-        <FieldGroup label="Break">
-          <Segmented name="Break" value={draft.breakMinutes} options={breakOptions} onChange={(v) => setDraft((d) => ({ ...d, breakMinutes: v }))} format={(v) => `${v}m`} />
+        <FieldGroup label="Pause">
+          <Segmented name="Pause" value={draft.breakMinutes} options={breakOptions} onChange={(v) => setDraft((d) => ({ ...d, breakMinutes: v }))} format={(v) => `${v} min`} />
         </FieldGroup>
       </div>
     </Dialog>

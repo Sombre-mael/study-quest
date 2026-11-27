@@ -96,24 +96,24 @@ export function MemoryGame({
     <Dialog
       open={open}
       onClose={onClose}
-      title="Warm-up: match the pairs"
+      title="Échauffement : associe les paires"
       description={
         playsLeft > 0
-          ? `Flip two cards at a time. Clear the board for bonus XP — the fewer moves, the more XP. ${playsLeft} of ${WARM_UP_DAILY_LIMIT} paid games left today.`
-          : `Daily limit reached: you have played ${WARM_UP_DAILY_LIMIT} paid warm-ups today. Play for fun — bonus XP resumes tomorrow.`
+          ? `Retourne deux cartes à la fois. Termine le plateau pour gagner de l’XP bonus — moins tu fais de coups, plus tu gagnes. ${playsLeft} partie(s) récompensée(s) sur ${WARM_UP_DAILY_LIMIT} aujourd’hui.`
+          : `Limite atteinte : tu as déjà joué ${WARM_UP_DAILY_LIMIT} échauffements récompensés aujourd’hui. Joue pour le plaisir — l’XP bonus revient demain.`
       }
       width={520}
       footer={
         <>
           <span className="text-[13px] text-ink-soft tabular-nums">
-            {moves} {moves === 1 ? 'move' : 'moves'} · {matched.length / 2} of {pairs} pairs
+            {moves} {moves === 1 ? 'coup' : 'coups'} · {matched.length / 2} sur {pairs} paires
           </span>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="secondary" size="sm" onClick={again}>
-              Restart
+              Recommencer
             </Button>
             <Button size="sm" onClick={onClose}>
-              Done
+              Terminé
             </Button>
           </div>
         </>
@@ -129,13 +129,13 @@ export function MemoryGame({
           >
             <Trophy size={28} aria-hidden />
           </motion.span>
-          <h3 className="mt-4 text-[22px] font-bold tracking-[-0.02em]">Board cleared</h3>
+          <h3 className="mt-4 text-[22px] font-bold tracking-[-0.02em]">Plateau terminé</h3>
           <p className="mt-1 text-[14px] text-ink-soft">
-            {moves} moves for {pairs} pairs.
+            {moves} coups pour {pairs} paires.
           </p>
           {award === 0 ? (
             <p className="mt-3 rounded-[2px] bg-[#fff4e5] px-4 py-1.5 text-[13.5px] font-medium text-[#c2410c]">
-              Daily limit reached — no XP this round.
+              Limite atteinte — pas d’XP cette fois.
             </p>
           ) : award ? (
             <p className="mt-3 inline-flex items-center gap-2 rounded-[2px] bg-[#eef6f5] px-4 py-1.5 text-[15px] font-semibold text-teal-700">
@@ -144,13 +144,13 @@ export function MemoryGame({
           ) : null}
           <div className="mt-5 flex gap-2">
             <Button variant="secondary" onClick={again}>
-              Play again
+              Rejouer
             </Button>
-            <Button onClick={onClose}>Back to planning</Button>
+            <Button onClick={onClose}>Retour au planning</Button>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-2.5 py-1" role="group" aria-label="Memory cards">
+        <div className="grid grid-cols-4 gap-2.5 py-1" role="group" aria-label="Cartes du jeu de mémoire">
           {deck.map((subjectId, i) => {
             const up = flipped.includes(i) || matched.includes(i)
             const hit = matched.includes(i)
@@ -161,7 +161,7 @@ export function MemoryGame({
                 type="button"
                 onClick={() => flip(i)}
                 disabled={hit}
-                aria-label={up ? `${subject.name}${hit ? ', matched' : ''}` : `Face-down card ${i + 1}`}
+                aria-label={up ? `${subject.name}${hit ? ', paire trouvée' : ''}` : `Carte face cachée ${i + 1}`}
                 initial={{ opacity: 0, scale: 0.86 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 30, delay: i * 0.03 }}

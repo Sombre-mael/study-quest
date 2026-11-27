@@ -5,7 +5,7 @@ import { EmptyState } from '../components/EmptyState'
 import { navigate } from '../lib/router'
 import { PageShell } from './PageShell'
 
-export function NotFound({ message = 'That page is not part of the planner.' }: { message?: string }) {
+export function NotFound({ message = 'Cette page ne fait pas partie du planning.' }: { message?: string }) {
   return (
     <PageShell>
       <div className="mt-[10vh] rounded-column bg-column shadow-[inset_0_0_0_1px_var(--color-column-edge)]">
@@ -13,11 +13,11 @@ export function NotFound({ message = 'That page is not part of the planner.' }: 
           tone="dark"
           as="h1"
           icon={<Compass />}
-          title="Nothing here"
+          title="Rien par ici"
           body={message}
           actions={
             <Button variant="pill" onClick={() => navigate('/')}>
-              Back to the planner
+              Retour au planning
             </Button>
           }
         />

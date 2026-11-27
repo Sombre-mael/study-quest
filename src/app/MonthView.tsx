@@ -11,7 +11,7 @@ import { formatDuration } from '../lib/format'
 import { navigate } from '../lib/router'
 import { CalendarToolbar } from './CalendarToolbar'
 
-const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const weekdays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 
 /** The month at a glance. Each day opens on the board. */
 export function MonthView({ items, today, anchor, settings }: { items: Item[]; today: ISODate; anchor: ISODate; settings: Settings }) {
@@ -29,7 +29,7 @@ export function MonthView({ items, today, anchor, settings }: { items: Item[]; t
   const go = (d: ISODate) => navigate(`/month?d=${d}`, { replace: true })
 
   return (
-    <section aria-label="Month view" className="flex flex-1 flex-col pb-[13px]" style={{ '--board-pad': 'clamp(16px, 2.8vw, 40px)' } as CSSProperties}>
+    <section aria-label="Vue mois" className="flex flex-1 flex-col pb-[13px]" style={{ '--board-pad': 'clamp(16px, 2.8vw, 40px)' } as CSSProperties}>
       <CalendarToolbar
         unit="month"
         label={monthLabel(first)}
@@ -57,11 +57,11 @@ export function MonthView({ items, today, anchor, settings }: { items: Item[]; t
             const tests = list.filter((x) => x.kind === 'test')
             const summary = [
               longDayLabel(date),
-              isToday ? 'today' : '',
-              list.length ? `${list.length} ${list.length === 1 ? 'item' : 'items'}` : 'nothing planned',
+              isToday ? 'aujourd’hui' : '',
+              list.length ? `${list.length} ${list.length === 1 ? 'élément' : 'éléments'}` : 'rien de prévu',
               total ? formatDuration(total) : '',
               tests.length ? tests.map((t) => t.title).join(', ') : '',
-              over ? `${formatDuration(over)} over the daily limit` : '',
+              over ? `${formatDuration(over)} au-dessus de la limite quotidienne` : '',
             ]
               .filter(Boolean)
               .join(', ')
@@ -75,7 +75,7 @@ export function MonthView({ items, today, anchor, settings }: { items: Item[]; t
                 <button
                   type="button"
                   onClick={() => navigate(`/?d=${date}`)}
-                  aria-label={`${summary}. Open on the board`}
+                  aria-label={`${summary}. Ouvrir dans le planning`}
                   className={cx(
                     'flex h-full min-h-[64px] w-full flex-col rounded-[2px] p-1.5 text-left transition-colors sm:min-h-[118px] sm:rounded-[2px] sm:p-2.5',
                     inMonth ? 'bg-column hover:bg-column-hot' : 'bg-white/[0.06] hover:bg-white/12',
@@ -115,7 +115,7 @@ export function MonthView({ items, today, anchor, settings }: { items: Item[]; t
                         <span className={cx('truncate', it.done && 'line-through')}>{it.title}</span>
                       </span>
                     ))}
-                    {list.length > 3 && <span className="px-1 text-[12px] text-white/85">+{list.length - 3} more</span>}
+                    {list.length > 3 && <span className="px-1 text-[12px] text-white/85">+{list.length - 3} de plus</span>}
                   </span>
                   <span className="mt-auto hidden items-center justify-between gap-1 pt-1.5 text-[12px] text-white/85 tabular-nums sm:flex" aria-hidden>
                     {total ? formatDuration(total) : ''}

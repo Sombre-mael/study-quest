@@ -12,8 +12,8 @@ type Env = {
 const app = new Hono<{ Bindings: Env }>()
 
 app.get('/api/health', (c) => c.json({ ok: true }))
-app.all('/api/health', (c) => c.json({ error: 'Method not allowed' }, 405, { Allow: 'GET' }))
-app.all('/api/*', (c) => c.json({ error: 'Not found' }, 404))
+app.all('/api/health', (c) => c.json({ error: 'Méthode non autorisée' }, 405, { Allow: 'GET' }))
+app.all('/api/*', (c) => c.json({ error: 'Introuvable' }, 404))
 
 app.all('*', (c) => c.env.ASSETS.fetch(c.req.raw))
 

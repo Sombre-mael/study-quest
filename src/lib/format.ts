@@ -6,9 +6,9 @@ export function formatDuration(minutes: number): string {
   return m === 0 ? `${h}h` : `${h}h ${m}m`
 }
 
-/** Column footer: the same, but an empty day reads "Free". */
+/** Column footer: the same, but an empty day reads "Libre". */
 export function formatTotal(minutes: number): string {
-  return minutes === 0 ? 'Free' : formatDuration(minutes)
+  return minutes === 0 ? 'Libre' : formatDuration(minutes)
 }
 
 export function uid(): string {

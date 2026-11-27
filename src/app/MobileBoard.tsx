@@ -11,7 +11,7 @@ import { formatTotal } from '../lib/format'
 import { SessionCard, type CardActions } from './SessionCard'
 
 function shortWeekday(iso: ISODate): string {
-  return fromISO(iso).toLocaleDateString('en-GB', { weekday: 'short' })
+  return fromISO(iso).toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '')
 }
 
 /**
@@ -68,11 +68,11 @@ export function MobileBoard({
   const over = settings.dailyLimit && selected >= today ? Math.max(0, total - settings.dailyLimit) : 0
 
   return (
-    <section aria-label="Study days" className="flex flex-1 flex-col gap-3 px-4 pb-6">
+    <section aria-label="Jours d’étude" className="flex flex-1 flex-col gap-3 px-4 pb-6">
       <div
         ref={strip}
         role="group"
-        aria-label="Pick a day"
+        aria-label="Choisir un jour"
         className="no-scrollbar -mx-4 flex snap-x gap-1.5 overflow-x-auto px-4 pt-1 pb-1"
       >
         {days.map((date) => {
@@ -85,7 +85,7 @@ export function MobileBoard({
               data-chip={date}
               onClick={() => setSelected(date)}
               aria-pressed={active}
-              aria-label={`${longDayLabel(date)}${date === today ? ', today' : ''}, ${list.length} ${list.length === 1 ? 'item' : 'items'}`}
+              aria-label={`${longDayLabel(date)}${date === today ? ', aujourd’hui' : ''}, ${list.length} ${list.length === 1 ? 'élément' : 'éléments'}`}
               className={cx(
                 'relative flex w-[52px] shrink-0 snap-start flex-col items-center gap-1 rounded-[2px] pt-2 pb-1.5 transition-colors',
                 active
@@ -114,23 +114,23 @@ export function MobileBoard({
       <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-[17px] leading-tight font-semibold tracking-[-0.01em]">
-            {selected === today ? 'Today' : longDayLabel(selected)}
+            {selected === today ? 'Aujourd’hui' : longDayLabel(selected)}
           </h2>
           <p className="mt-0.5 text-[13.5px] text-white/85">
             {selected === today && <span className="text-white/85">{longDayLabel(selected)} · </span>}
-            {dayItems.length === 0 ? 'Nothing planned' : `${formatTotal(total)} planned`}
+            {dayItems.length === 0 ? 'Rien de prévu' : `${formatTotal(total)} prévues`}
           </p>
         </div>
         {selected !== today && (
           <Button variant="linkDark" size="sm" onClick={() => setSelected(today)} className="pb-0.5">
-            Today
+            Aujourd’hui
           </Button>
         )}
       </header>
 
       {dayItems.length === 0 ? (
         <p className="rounded-column bg-column px-4 py-6 text-center text-[14px] leading-[1.5] text-white/85 shadow-[inset_0_0_0_1px_var(--color-column-edge)]">
-          A free day. Add a session, or pick another date above.
+          Une journée libre. Ajoute une séance ou choisis une autre date ci-dessus.
         </p>
       ) : (
         <div className="flex flex-col gap-2.5">
@@ -163,7 +163,7 @@ export function MobileBoard({
         {over > 0 && (
           <Button variant="glass" size="md" className="w-full" onClick={() => actions.rebalance(selected)}>
             <Shuffle />
-            Rebalance this day
+            Rééquilibrer ce jour
           </Button>
         )}
       </div>

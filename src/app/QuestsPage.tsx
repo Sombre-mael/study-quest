@@ -58,11 +58,11 @@ export function QuestsPage({
           <>
             <Button variant="glass" size="md" onClick={onWarmUp}>
               <Gamepad2 />
-              Warm-up
+              Échauffement
             </Button>
             <Button variant="pill" size="md" onClick={onPlan} className="px-5">
               <Sparkles />
-              Plan a test
+              Planifier un contrôle
             </Button>
           </>
         }
@@ -71,25 +71,25 @@ export function QuestsPage({
       <Panel tone="glass" className="overflow-hidden">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
           <div className="relative grid size-[76px] shrink-0 place-items-center rounded-[2px] bg-[#ffd166] text-[#10201f] shadow-[0_0_0_2px_#10201f,5px_5px_0_rgb(2_22_20/0.45)]">
-            <span className="text-[9.5px] font-semibold tracking-[0.16em] uppercase">Level</span>
+            <span className="text-[9.5px] font-semibold tracking-[0.16em] uppercase">Niveau</span>
             <span className="font-display -mt-0.5 text-[22px] leading-none">{level.level}</span>
           </div>
 
           <div className="min-w-[160px] flex-1">
             <p className="text-[12px] font-semibold tracking-[0.14em] text-white/75 uppercase">{level.rank}</p>
             <p className="mt-0.5 text-[21px] font-bold tracking-[-0.02em] tabular-nums">
-              {level.xp.toLocaleString('en-GB')} XP
+              {level.xp.toLocaleString('fr-FR')} XP
               <span className="ml-2 text-[13px] font-medium text-white/75">
-                {level.into} / {level.span} to level {level.level + 1}
+                {level.into} / {level.span} avant le niveau {level.level + 1}
               </span>
             </p>
             <div
               role="meter"
-              aria-label={`Level ${level.level} progress`}
+              aria-label={`Progression du niveau ${level.level}`}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={Math.round(level.ratio * 100)}
-              aria-valuetext={`${level.into} of ${level.span} XP`}
+              aria-valuetext={`${level.into} XP sur ${level.span}`}
               className="mt-2 h-2.5 overflow-hidden rounded-[2px] bg-white/22"
             >
               <motion.span
@@ -99,19 +99,19 @@ export function QuestsPage({
                 transition={{ type: 'spring', stiffness: 120, damping: 24 }}
               />
             </div>
-            <p className="mt-1.5 text-[12.5px] text-white/80">{level.toNext} XP to the next level</p>
+            <p className="mt-1.5 text-[12.5px] text-white/80">{level.toNext} XP avant le niveau suivant</p>
           </div>
 
           <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:flex-wrap">
-            <MiniStat icon={Flame} label="Streak" value={`${streak.days}d`} note={`×${boost} boost`} />
-            <MiniStat icon={Check} label="Quests" value={`${cleared}/${game.quests.length}`} note="today" />
-            <MiniStat icon={Trophy} label="Badges" value={`${earned}/${badges.length}`} note="collected" />
+            <MiniStat icon={Flame} label="Série" value={`${streak.days} j`} note={`bonus ×${boost}`} />
+            <MiniStat icon={Check} label="Quêtes" value={`${cleared}/${game.quests.length}`} note="aujourd’hui" />
+            <MiniStat icon={Trophy} label="Badges" value={`${earned}/${badges.length}`} note="obtenus" />
           </div>
         </div>
       </Panel>
 
       <div className="mt-3.5 grid gap-3.5 lg:grid-cols-[1.05fr_1fr]">
-        <Panel title="Today's quests" action={<span className="text-[13px] text-ink-soft tabular-nums">{game.questXp} XP available</span>}>
+        <Panel title="Quêtes du jour" action={<span className="text-[13px] text-ink-soft tabular-nums">{game.questXp} XP à gagner</span>}>
           <ul className="divide-y divide-line">
             {game.quests.map((q) => {
               const pct = Math.round((q.value / q.target) * 100)
@@ -130,7 +130,7 @@ export function QuestsPage({
                       <p className="flex flex-wrap items-center gap-2 text-[14.5px] font-medium">
                         {q.title}
                         <span className="rounded-[2px] bg-[#eef6f5] px-2 py-px text-[11.5px] font-semibold text-teal-700">+{q.xp} XP</span>
-                        {q.done && <span className="text-[12px] font-medium text-[#166534]">cleared</span>}
+                        {q.done && <span className="text-[12px] font-medium text-[#166534]">validée</span>}
                       </p>
                       <p className="text-[13px] text-ink-soft">{q.detail}</p>
                       <div className="mt-2 h-1.5 overflow-hidden rounded-[2px] bg-[#e6eded]" aria-hidden>
@@ -154,8 +154,8 @@ export function QuestsPage({
         </Panel>
 
         <Panel
-          title="Boss battles"
-          action={<span className="text-[13px] text-ink-soft">Study is damage</span>}
+          title="Combats de boss"
+          action={<span className="text-[13px] text-ink-soft">Réviser, c’est taper</span>}
         >
           {bosses.length ? (
             <ul className="space-y-4">
@@ -177,11 +177,11 @@ export function QuestsPage({
                     </div>
                     <div
                       role="meter"
-                      aria-label={`${b.title} readiness`}
+                      aria-label={`Préparation pour ${b.title}`}
                       aria-valuemin={0}
                       aria-valuemax={100}
                       aria-valuenow={pct}
-                      aria-valuetext={`${pct}% ready, ${formatDuration(b.hp)} of study left`}
+                      aria-valuetext={`${pct}% prêt, ${formatDuration(b.hp)} de révision restante`}
                       className="relative mt-2 h-3 overflow-hidden rounded-[2px] bg-[#e6eded]"
                     >
                       <motion.span
@@ -194,16 +194,16 @@ export function QuestsPage({
                     </div>
                     <p className="mt-1 flex justify-between text-[12px] text-ink-soft tabular-nums">
                       <span>
-                        {formatDuration(b.damage)} / {formatDuration(b.maxHp)} damage
+                        {formatDuration(b.damage)} / {formatDuration(b.maxHp)} de dégâts
                       </span>
-                      <span>{b.hp > 0 ? `${formatDuration(b.hp)} HP left` : 'Defeated'}</span>
+                      <span>{b.hp > 0 ? `${formatDuration(b.hp)} PV restants` : 'Vaincu'}</span>
                     </p>
                   </li>
                 )
               })}
             </ul>
           ) : (
-            <EmptyState icon={<Swords />} title="No bosses yet" body="Plan a test and it shows up here with a health bar made of study minutes." actions={<Button size="sm" onClick={onPlan}>Plan a test</Button>} />
+            <EmptyState icon={<Swords />} title="Aucun boss pour l’instant" body="Planifie un contrôle : il apparaîtra ici avec une barre de vie faite de minutes de révision." actions={<Button size="sm" onClick={onPlan}>Planifier un contrôle</Button>} />
           )}
         </Panel>
       </div>
@@ -211,7 +211,7 @@ export function QuestsPage({
       <Panel
         title="Badges"
         className="mt-3.5"
-        action={<span className="text-[13px] text-ink-soft tabular-nums">{earned} of {badges.length} earned</span>}
+        action={<span className="text-[13px] text-ink-soft tabular-nums">{earned} sur {badges.length} obtenus</span>}
       >
         <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {badges.map((b) => {
@@ -251,16 +251,16 @@ export function QuestsPage({
             <Gamepad2 size={22} aria-hidden />
           </span>
           <div className="min-w-[220px] flex-1">
-            <p className="text-[16px] font-semibold">Warm-up round</p>
+            <p className="text-[16px] font-semibold">Manche d’échauffement</p>
             <p className="text-[13.5px] leading-5 text-white/85">
-              A 30-second memory game with your subjects. Clear the board for up to 50 bonus XP.{' '}
+              Un jeu de mémoire de 30 secondes avec tes matières. Termine le plateau pour gagner jusqu’à 50 XP bonus.{' '}
               {game.warmUpLeft > 0
-                ? `${game.warmUpLeft} of ${WARM_UP_DAILY_LIMIT} paid games left today.`
-                : 'Daily limit reached — bonus XP resumes tomorrow.'}
+                ? `${game.warmUpLeft} partie(s) récompensée(s) sur ${WARM_UP_DAILY_LIMIT} aujourd’hui.`
+                : 'Limite atteinte — l’XP bonus revient demain.'}
             </p>
           </div>
           <Button variant="pill" size="md" onClick={onWarmUp} className="px-5">
-            {game.warmUpLeft > 0 ? 'Play warm-up' : 'Practice only'}
+            {game.warmUpLeft > 0 ? 'Jouer à l’échauffement' : 'Entraînement libre'}
           </Button>
         </div>
       </Panel>

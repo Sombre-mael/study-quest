@@ -104,7 +104,7 @@ export function App() {
     setToast({
       id: ++toastId.current,
       message,
-      action: undo ? { label: 'Undo', run: () => dispatch({ type: 'replace', state: undo }) } : undefined,
+      action: undo ? { label: 'Annuler', run: () => dispatch({ type: 'replace', state: undo }) } : undefined,
     })
   }, [dispatch])
   const dismissToast = useCallback(() => setToast(null), [])
@@ -112,7 +112,7 @@ export function App() {
   const awardWarmUp = useCallback(
     (xp: number) => {
       dispatch({ type: 'warmUp', date: today, xp })
-      notify(`Warm-up cleared · +${xp} bonus XP`)
+      notify(`Échauffement réussi · +${xp} XP bonus`)
     },
     [dispatch, notify, today],
   )
@@ -123,10 +123,10 @@ export function App() {
       if (item.kind === 'test') {
         const linked = snapshot.items.filter((i) => i.testId === item.id && !i.done).map((i) => i.id)
         dispatch({ type: 'remove', ids: [item.id, ...linked] })
-        notify(linked.length ? `Deleted ${item.title} and ${linked.length} sessions` : `Deleted ${item.title}`, snapshot)
+        notify(linked.length ? `${item.title} supprimé, ainsi que ${linked.length} séances` : `${item.title} supprimé`, snapshot)
       } else {
         dispatch({ type: 'remove', ids: [item.id] })
-        notify(`Deleted ${item.title}`, snapshot)
+        notify(`${item.title} supprimé`, snapshot)
       }
     },
     [dispatch, notify],
@@ -139,7 +139,7 @@ export function App() {
       if (!limit) return
       const { moves, left } = rebalance(snapshot.items, date, limit, today)
       if (moves.length === 0) {
-        notify(`No room nearby. Raise the daily limit or move a session by hand.`)
+        notify(`Pas de place à proximité. Augmente la limite quotidienne ou déplace une séance à la main.`)
         return
       }
       for (const m of moves) {
@@ -148,7 +148,7 @@ export function App() {
       }
       const where = [...new Set(moves.map((m) => dayLabel(m.to)))].join(', ')
       notify(
-        left ? `Moved ${moves.length} to ${where}; still ${formatDuration(left)} over` : `Moved ${moves.length} ${moves.length === 1 ? 'session' : 'sessions'} to ${where}`,
+        left ? `${moves.length} séance(s) déplacée(s) vers ${where} ; il reste ${formatDuration(left)} de trop` : `${moves.length} ${moves.length === 1 ? 'séance déplacée' : 'séances déplacées'} vers ${where}`,
         snapshot,
       )
     },
@@ -165,12 +165,12 @@ export function App() {
         captureFlight(item.id)
         const date = addDays(item.date, days)
         dispatch({ type: 'move', id: item.id, date, index: 99 })
-        notify(`Moved to ${dayLabel(date)}`)
+        notify(`Déplacé vers ${dayLabel(date)}`)
       },
       toggleDone: (item) => {
         const snapshot = stateRef.current
         dispatch({ type: 'setDone', id: item.id, done: !item.done, today })
-        if (!item.done) notify(`+${item.minutes + XP_PER_TICK} XP · ${item.title} cleared`, snapshot)
+        if (!item.done) notify(`+${item.minutes + XP_PER_TICK} XP · ${item.title} validé`, snapshot)
       },
       warmUp: () => setWarmUpOpen(true),
       remove,
@@ -198,20 +198,20 @@ export function App() {
     setReplanning(null)
     if (path !== '/') navigate('/')
     setScrollTarget({ date: plan.sessions[0]?.date ?? plan.test.date, n: Date.now() })
-    notify(`Planned ${plan.sessions.length} sessions for ${plan.test.title}`, snapshot)
+    notify(`${plan.sessions.length} séances planifiées pour ${plan.test.title}`, snapshot)
   }
 
   const loadSample = () => {
     const snapshot = state
     dispatch({ type: 'replace', state: { ...sampleState(today), settings } })
     setPlanOpen(false)
-    notify('Sample plan loaded', snapshot)
+    notify('Planning d’exemple chargé', snapshot)
   }
   const startFresh = () => {
     const snapshot = state
     dispatch({ type: 'replace', state: emptyState(subjects, settings) })
     if (view === null) navigate('/')
-    notify('Planner cleared', snapshot)
+    notify('Planning vidé', snapshot)
   }
 
   const usage = useMemo(() => {
@@ -230,7 +230,7 @@ export function App() {
       <main id="main" className="relative z-10 flex flex-1 flex-col">
         <HeroSlot onStart={openPlan} compact={view !== 'days' && items.length > 0} />
         <div className="no-print -mt-2 mb-4 flex justify-center md:hidden">
-          <ViewSwitcher view={view} name="Planner view (mobile)" anchor={anchor} />
+          <ViewSwitcher view={view} name="Vue du planning (mobile)" anchor={anchor} />
         </div>
         {empty ? (
           <Onboarding onPlan={openPlan} onAddToday={() => setDraft({ mode: 'create', date: today })} onSample={loadSample} />
@@ -320,7 +320,7 @@ export function App() {
       <SubjectsProvider subjects={subjects}>
         <div className="relative flex min-h-dvh flex-col pb-[calc(60px_+_env(safe-area-inset-bottom))] md:pb-0" style={boardVars}>
           <a href="#main" className="sr-only z-50 rounded-full bg-white px-4 py-2 text-teal-900 focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
-            Skip to content
+            Aller au contenu
           </a>
           {/* A slow light drifting across the teal, behind everything. */}
           <div aria-hidden className="no-print pointer-events-none fixed inset-0 overflow-hidden">
@@ -349,12 +349,12 @@ export function App() {
               settings={settings}
               onComplete={(minutes) => {
                 dispatch({ type: 'setDone', id: focusItem.id, done: true, today, minutes })
-                notify(`+${minutes + XP_PER_TICK} XP · ${focusItem.title} cleared`)
+                notify(`+${minutes + XP_PER_TICK} XP · ${focusItem.title} validé`)
               }}
               onExit={(minutes) => {
                 if (minutes > 0) {
                   dispatch({ type: 'logFocus', subject: focusItem.subject, minutes, date: today, itemId: focusItem.id })
-                  notify(`Logged ${formatDuration(minutes)} of focus`)
+                  notify(`${formatDuration(minutes)} de concentration enregistrées`)
                 }
                 leaveFocus()
               }}
@@ -403,13 +403,13 @@ export function App() {
             const isNew = subjectDraft?.mode === 'create'
             dispatch({ type: 'subject.save', subject })
             setSubjectDraft(null)
-            notify(isNew ? `Added ${subject.name}` : `Saved ${subject.name}`)
+            notify(isNew ? `${subject.name} ajoutée` : `${subject.name} enregistrée`)
           }}
           onDelete={(subject) => {
             const snapshot = state
             dispatch({ type: 'subject.remove', id: subject.id })
             setSubjectDraft(null)
-            notify(`Deleted ${subject.name}`, snapshot)
+            notify(`${subject.name} supprimée`, snapshot)
           }}
         />
 
@@ -420,7 +420,7 @@ export function App() {
           onSave={(s: Settings) => {
             dispatch({ type: 'settings', patch: s })
             setSettingsOpen(false)
-            notify(s.dailyLimit ? `Daily limit set to ${formatDuration(s.dailyLimit)}` : 'Daily limit turned off')
+            notify(s.dailyLimit ? `Limite quotidienne fixée à ${formatDuration(s.dailyLimit)}` : 'Limite quotidienne désactivée')
           }}
         />
 
@@ -438,10 +438,10 @@ function FocusMissing({ onBack }: { onBack: () => void }) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-[#023a37]/95 p-6 text-center text-white">
       <div>
-        <p className="text-[20px] font-semibold">That session isn't in your planner</p>
-        <p className="mt-1 text-white/85">It may have been deleted.</p>
+        <p className="text-[20px] font-semibold">Cette séance n’est pas dans ton planning</p>
+        <p className="mt-1 text-white/85">Elle a peut-être été supprimée.</p>
         <Button variant="pill" onClick={onBack} className="mt-5" autoFocus>
-          Back to the planner
+          Retour au planning
         </Button>
       </div>
     </div>

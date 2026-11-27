@@ -51,7 +51,7 @@ export function DayColumn({
     <motion.section
       data-day={date}
       data-over={over > 0 || undefined}
-      aria-label={`${longDayLabel(date)}${isToday ? ', today' : ''}${over ? `, ${over} minutes over the daily limit` : ''}`}
+      aria-label={`${longDayLabel(date)}${isToday ? ', aujourd’hui' : ''}${over ? `, ${over} minutes au-dessus de la limite quotidienne` : ''}`}
       initial={entrance.active ? { opacity: 0, y: 34 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ ...spring, delay: entrance.active ? 0.35 + columnDelay : 0 }}
@@ -89,7 +89,7 @@ export function DayColumn({
           transition={spring}
           type="button"
           onClick={() => onAdd(date)}
-          aria-label={`${copy.addSession} on ${longDayLabel(date)}`}
+          aria-label={`${copy.addSession} le ${longDayLabel(date)}`}
           className="flex h-9 items-center gap-1.5 rounded-[2px] px-2 text-[13.5px] font-medium text-white/0 transition-colors group-hover/col:text-white/85 hover:bg-white/10 hover:text-white focus-visible:text-white max-sm:h-10 [@media(hover:none)]:text-white/80"
         >
           <Plus size={15} strokeWidth={2.2} aria-hidden />
@@ -115,7 +115,7 @@ export function DayColumn({
             >
               <Button variant="glass" size="xs" className="mt-2.5 w-full" onClick={() => actions.rebalance(date)}>
                 <Shuffle />
-                Rebalance
+                Rééquilibrer
               </Button>
             </motion.div>
           )}

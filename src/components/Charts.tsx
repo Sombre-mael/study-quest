@@ -82,7 +82,7 @@ export function DayBars({ data, limit, format, label }: { data: DayDatum[]; limi
       <div className="relative flex h-[140px] items-end gap-[3px] border-b border-line sm:gap-1.5">
         {limit > 0 && (
           <div className="pointer-events-none absolute inset-x-0 border-t border-dashed border-[#c2410c]/60" style={{ bottom: `${(limit / max) * 100}%` }}>
-            <span className="absolute -top-[18px] right-0 text-[11.5px] font-medium text-[#b13a0b]">Daily limit {format(limit)}</span>
+            <span className="absolute -top-[18px] right-0 text-[11.5px] font-medium text-[#b13a0b]">Limite {format(limit)}</span>
           </div>
         )}
         {data.map((d, i) => (

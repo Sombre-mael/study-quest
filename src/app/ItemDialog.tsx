@@ -46,7 +46,7 @@ export function ItemDialog({
 
   const save = () => {
     if (!draft) return
-    const fallback = `${get(subject).name} ${isTest ? 'test' : 'revision'}`
+    const fallback = isTest ? `Contrôle de ${get(subject).name}` : `Révision de ${get(subject).name}`
     onSave({ subject, title: title.trim() || fallback, subtitle: subtitle.trim() || undefined, minutes: isTest ? 0 : minutes, date }, draft)
   }
 
@@ -56,20 +56,20 @@ export function ItemDialog({
     <Dialog
       open={!!draft}
       onClose={onClose}
-      title={editing ? (isTest ? 'Edit test' : 'Edit session') : 'New session'}
+      title={editing ? (isTest ? 'Modifier le contrôle' : 'Modifier la séance') : 'Nouvelle séance'}
       description={date ? longDayLabel(date) : undefined}
       footer={
         <>
           {editing && (
             <Button variant="danger" onClick={() => onDelete(editing)} className="mr-auto">
               <Trash2 />
-              Delete
+              Supprimer
             </Button>
           )}
           <Button variant="ghost" onClick={onClose} className={editing ? undefined : 'ml-auto'}>
-            Cancel
+            Annuler
           </Button>
-          <Button onClick={save}>{editing ? 'Save' : 'Add session'}</Button>
+          <Button onClick={save}>{editing ? 'Enregistrer' : 'Ajouter'}</Button>
         </>
       }
     >
@@ -80,23 +80,23 @@ export function ItemDialog({
           save()
         }}
       >
-        <FieldGroup label="Subject">
+        <FieldGroup label="Matière">
           <SubjectPicker value={subject} onChange={setSubject} />
         </FieldGroup>
-        <Field label="Title">
-          <Input data-autofocus value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`${get(subject).name} ${isTest ? 'test' : 'flashcards'}`} />
+        <Field label="Titre">
+          <Input data-autofocus value={title} onChange={(e) => setTitle(e.target.value)} placeholder={isTest ? `Contrôle de ${get(subject).name}` : `Révision de ${get(subject).name}`} />
         </Field>
         {!isTest && (
           <>
-            <Field label="Details" hint="Optional">
-              <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="Chapter 3, questions 1–10" />
+            <Field label="Détails" hint="Facultatif">
+              <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="Chapitre 3, questions 1 à 10" />
             </Field>
-            <FieldGroup label="Duration" hint={formatDuration(minutes)}>
-              <Segmented name="Duration" value={minutes} options={options} onChange={setMinutes} format={(v) => (v < 60 ? `${v}m` : formatDuration(v))} />
+            <FieldGroup label="Durée" hint={formatDuration(minutes)}>
+              <Segmented name="Durée" value={minutes} options={options} onChange={setMinutes} format={(v) => (v < 60 ? `${v} min` : formatDuration(v))} />
             </FieldGroup>
           </>
         )}
-        <Field label="Day">
+        <Field label="Jour">
           <Input type="date" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} required />
         </Field>
         <button type="submit" hidden />

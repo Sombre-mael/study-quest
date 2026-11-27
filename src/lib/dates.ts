@@ -36,20 +36,21 @@ export function dayRange(from: ISODate, to: ISODate): ISODate[] {
   return out
 }
 
-/** "Tue 10" */
+/** "mar. 10" */
 export function dayLabel(iso: ISODate): string {
   const d = fromISO(iso)
-  return `${d.toLocaleDateString('en-GB', { weekday: 'short' })} ${d.getDate()}`
+  const label = d.toLocaleDateString('fr-FR', { weekday: 'short' })
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)} ${d.getDate()}`
 }
 
-/** "Tuesday 10 November" */
+/** "mardi 10 novembre" */
 export function longDayLabel(iso: ISODate): string {
-  return fromISO(iso).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+  return fromISO(iso).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
 /** "NOV" */
 export function monthShort(iso: ISODate): string {
-  return fromISO(iso).toLocaleDateString('en-GB', { month: 'short' }).slice(0, 3).toUpperCase()
+  return fromISO(iso).toLocaleDateString('fr-FR', { month: 'short' }).slice(0, 3).replace('.', '').toUpperCase()
 }
 
 export function dayOfMonth(iso: ISODate): number {
@@ -72,16 +73,16 @@ export function addMonths(iso: ISODate, n: number): ISODate {
   return toISO(new Date(d.getFullYear(), d.getMonth() + n, 1))
 }
 
-/** "November 2026" */
+/** "novembre 2026" */
 export function monthLabel(iso: ISODate): string {
-  return fromISO(iso).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+  return fromISO(iso).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 }
 
-/** "9 – 15 Nov" or "30 Nov – 6 Dec" */
+/** "9 – 15 nov." ou "30 nov. – 6 déc." */
 export function weekLabel(start: ISODate): string {
   const a = fromISO(start)
   const b = fromISO(addDays(start, 6))
-  const m = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short' })
+  const m = (d: Date) => d.toLocaleDateString('fr-FR', { month: 'short' })
   return a.getMonth() === b.getMonth() ? `${a.getDate()} – ${b.getDate()} ${m(b)}` : `${a.getDate()} ${m(a)} – ${b.getDate()} ${m(b)}`
 }
 

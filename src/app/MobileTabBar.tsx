@@ -12,18 +12,18 @@ export function MobileTabBar({ path }: { path: string }) {
   const tabs: { href: string; label: string; icon: ReactNode; active: boolean }[] = [
     {
       href: '/',
-      label: 'Planner',
+      label: 'Planning',
       icon: <Columns3 />,
       active: path === '/' || path === '/week' || path === '/month' || path.startsWith('/focus/'),
     },
-    { href: '/quests', label: 'Quests', icon: <Swords />, active: path === '/quests' },
-    { href: '/stats', label: 'Progress', icon: <ChartColumn />, active: path === '/stats' },
-    { href: '/subjects', label: 'Subjects', icon: <Shapes />, active: path === '/subjects' },
+    { href: '/quests', label: 'Quêtes', icon: <Swords />, active: path === '/quests' },
+    { href: '/stats', label: 'Progrès', icon: <ChartColumn />, active: path === '/stats' },
+    { href: '/subjects', label: 'Matières', icon: <Shapes />, active: path === '/subjects' },
   ]
 
   return (
     <nav
-      aria-label="Main"
+      aria-label="Navigation principale"
       className="no-print fixed inset-x-0 bottom-0 z-30 border-t-2 border-[#10201f] bg-[#04332f]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
     >
       <ul className="mx-auto flex max-w-[520px] px-2">

@@ -28,7 +28,7 @@ scanlines discrètes en fond.
   cochée et le temps est enregistré ; quitter plus tôt conserve les minutes
   déjà faites.
 - **Limite quotidienne.** Un jour au-delà de la limite (2 h par défaut) reçoit
-  un anneau d'alerte, une pastille « over » et un bouton **Rebalance** qui
+  un anneau d'alerte, une pastille « de trop » et un bouton **Rééquilibrer** qui
   déplace les dernières sessions vers les jours les plus proches ayant de la
   place, sans jamais dépasser la date d'un contrôle. Réglable dans More → Daily
   limit & timer.
@@ -68,13 +68,13 @@ scanlines discrètes en fond.
 En dessous de 768 px, l'application a sa propre mise en page, pas un tableau
 rétréci :
 
-- une barre d'onglets fixe en bas (Planner, Quests, Progress, Subjects) avec la
+- une barre d'onglets fixe en bas (Planning, Quêtes, Progrès, Matières) avec la
   marge de sécurité de l'écran, et un en-tête allégé qui ne garde que le logo,
   le niveau et le menu More ;
 - le planner passe **à un jour à la fois** : un bandeau de dates à faire
   défiler, avec un point par session et un drapeau pour les contrôles, puis les
   cartes du jour en pleine largeur, son total et ses actions Add session /
-  Rebalance (`src/app/MobileBoard.tsx`) ;
+  Rééquilibrer (`src/app/MobileBoard.tsx`) ;
 - la semaine empile ses sept jours en blocs compacts, le mois garde ses sept
   colonnes avec des points à la place des noms de cartes ;
 - les dialogues deviennent des feuilles qui montent du bas, avec un pied de

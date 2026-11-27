@@ -48,8 +48,8 @@ export function SubjectDialog({
 
   const trimmed = name.trim()
   const clash = list.find((s) => s.name.toLowerCase() === trimmed.toLowerCase() && s.id !== editing?.id)
-  const error = !trimmed ? 'Give the subject a name.' : clash ? `You already have ${clash.name}.` : undefined
-  const preview: Subject = { id: editing?.id ?? 'preview', name: trimmed || 'New subject', color, icon }
+  const error = !trimmed ? 'Donne un nom à la matière.' : clash ? `Tu as déjà ${clash.name}.` : undefined
+  const preview: Subject = { id: editing?.id ?? 'preview', name: trimmed || 'Nouvelle matière', color, icon }
   const count = editing ? (usage.get(editing.id) ?? 0) : 0
 
   const save = () => {
@@ -64,22 +64,22 @@ export function SubjectDialog({
     <Dialog
       open={!!draft}
       onClose={onClose}
-      title={editing ? `Edit ${editing.name}` : 'New subject'}
-      description="Its colour and icon show on every card for this subject."
+      title={editing ? `Modifier ${editing.name}` : 'Nouvelle matière'}
+      description="Sa couleur et son icône apparaissent sur toutes les cartes de cette matière."
       width={540}
       footer={
         <AnimatePresence mode="wait" initial={false}>
           {confirming && editing ? (
             <motion.div key="confirm" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex w-full flex-wrap items-center gap-2">
               <p className="mr-auto text-[13.5px] text-ink-soft" role="alert">
-                {count ? `This also deletes ${count} ${count === 1 ? 'card' : 'cards'}.` : 'No cards use it.'} You can undo.
+                {count ? `Cela supprime aussi ${count} ${count === 1 ? 'carte' : 'cartes'}.` : 'Aucune carte ne l’utilise.'} Tu pourras annuler.
               </p>
               <Button variant="ghost" onClick={() => setConfirming(false)}>
-                Keep it
+                La garder
               </Button>
               <Button variant="danger" onClick={() => onDelete(editing)} data-autofocus>
                 <Trash2 />
-                Delete subject
+                Supprimer la matière
               </Button>
             </motion.div>
           ) : (
@@ -87,13 +87,13 @@ export function SubjectDialog({
               {editing && (
                 <Button variant="danger" onClick={() => setConfirming(true)} className="mr-auto" disabled={list.length <= 1}>
                   <Trash2 />
-                  Delete
+                  Supprimer
                 </Button>
               )}
               <Button variant="ghost" onClick={onClose} className={editing ? undefined : 'ml-auto'}>
-                Cancel
+                Annuler
               </Button>
-              <Button onClick={save}>{editing ? 'Save' : 'Add subject'}</Button>
+              <Button onClick={save}>{editing ? 'Enregistrer' : 'Ajouter la matière'}</Button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -112,20 +112,20 @@ export function SubjectDialog({
             <motion.div key={color + icon} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 22 }} className="inline-block">
               <SubjectChip subject={preview} />
             </motion.div>
-            <p className="mt-[10px] truncate text-[15.5px] leading-5 font-medium">{preview.name} recap</p>
+            <p className="mt-[10px] truncate text-[15.5px] leading-5 font-medium">Révision de {preview.name}</p>
             <div className="mt-2">
               <DurationPill minutes={30} />
             </div>
           </div>
-          <p className="text-[13px] leading-[1.45] text-ink-soft">Preview of a card</p>
+          <p className="text-[13px] leading-[1.45] text-ink-soft">Aperçu d’une carte</p>
         </div>
-        <Field label="Name" error={touched ? error : undefined}>
-          <Input data-autofocus value={name} onChange={(e) => setName(e.target.value)} onBlur={() => setTouched(true)} placeholder="e.g. Computer science" maxLength={32} />
+        <Field label="Nom" error={touched ? error : undefined}>
+          <Input data-autofocus value={name} onChange={(e) => setName(e.target.value)} onBlur={() => setTouched(true)} placeholder="ex. Informatique" maxLength={32} />
         </Field>
-        <FieldGroup label="Colour">
+        <FieldGroup label="Couleur">
           <ColorPicker value={color} onChange={setColor} />
         </FieldGroup>
-        <FieldGroup label="Icon">
+        <FieldGroup label="Icône">
           <IconPicker value={icon} color={color} onChange={setIcon} />
         </FieldGroup>
         <button type="submit" hidden />

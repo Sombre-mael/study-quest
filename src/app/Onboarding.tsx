@@ -9,9 +9,9 @@ import { navigate } from '../lib/router'
 import { useSubjects } from '../lib/subjects'
 
 const steps = [
-  { icon: <Sparkles />, title: 'Plan a test', body: 'Pick a date; sessions spread across the days before it.' },
-  { icon: <Timer />, title: 'Focus', body: 'Start a calm timer from any card. It ticks the card off.' },
-  { icon: <ChartColumn />, title: 'Track', body: 'Hours per subject, your streak and how ready you are.' },
+  { icon: <Sparkles />, title: 'Planifie un contrôle', body: 'Choisis une date ; les séances se répartissent sur les jours d’avant.' },
+  { icon: <Timer />, title: 'Concentre-toi', body: 'Lance un minuteur depuis n’importe quelle carte. Elle se coche à la fin.' },
+  { icon: <ChartColumn />, title: 'Suis tes progrès', body: 'Heures par matière, ta série et ton niveau de préparation.' },
 ]
 
 /** What a brand-new planner shows in place of the board. */
@@ -49,19 +49,19 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
           <div className="mt-7 flex flex-wrap items-center gap-2">
             <Button variant="pill" size="md" onClick={onPlan} className="px-5">
               <Sparkles />
-              Plan your first test
+              Planifie ton premier contrôle
             </Button>
             <Button variant="glass" size="md" onClick={onAddToday}>
               <CalendarPlus />
-              Add a session today
+              Ajouter une séance aujourd’hui
             </Button>
           </div>
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
             <Button variant="linkDark" size="sm" onClick={() => navigate('/subjects')}>
-              Set up your subjects first
+              Commence par tes matières
             </Button>
             <Button variant="linkDark" size="sm" onClick={onSample}>
-              Or load the sample plan
+              Ou charge le planning d’exemple
             </Button>
           </div>
         </div>
@@ -76,7 +76,7 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
               className="absolute top-2 left-0 w-[220px] rounded-card bg-card p-3 text-ink shadow-card-hover"
             >
               <SubjectChip subject={a} />
-              <p className="mt-2.5 text-[15px] font-medium">{a.name} recap</p>
+              <p className="mt-2.5 text-[15px] font-medium">Révision de {a.name}</p>
               <div className="mt-2">
                 <DurationPill minutes={30} />
               </div>
@@ -90,7 +90,7 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
               className="absolute top-[110px] right-0 w-[220px] rounded-card bg-card p-3 text-ink shadow-lift"
             >
               <SubjectChip subject={b} />
-              <p className="mt-2.5 text-[15px] font-medium">{b.name} test</p>
+              <p className="mt-2.5 text-[15px] font-medium">Contrôle de {b.name}</p>
               <div className="mt-2">
                 <TestPill />
               </div>

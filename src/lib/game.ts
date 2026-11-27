@@ -20,12 +20,12 @@ export function levelXp(level: number): number {
 }
 
 const RANKS: Array<{ at: number; name: string }> = [
-  { at: 16, name: 'Legend' },
-  { at: 12, name: 'Master' },
-  { at: 9, name: 'Adept' },
-  { at: 6, name: 'Scholar' },
-  { at: 4, name: 'Apprentice' },
-  { at: 1, name: 'Explorer' },
+  { at: 16, name: 'Légende' },
+  { at: 12, name: 'Maître' },
+  { at: 9, name: 'Adepte' },
+  { at: 6, name: 'Érudit' },
+  { at: 4, name: 'Apprenti' },
+  { at: 1, name: 'Explorateur' },
 ]
 
 export function rankFor(level: number): string {
@@ -93,10 +93,10 @@ export function dailyQuests(log: LogEntry[], today: ISODate): Quest[] {
   const ticks = todayLog.filter((l) => l.source === 'done').length
   const subjects = new Set(todayLog.map((l) => l.subject)).size
   return [
-    { id: 'warm-up', title: 'Warm up', detail: 'Study for 15 minutes today', xp: 40, value: Math.min(minutes, 15), target: 15, unit: 'min', done: minutes >= 15 },
-    { id: 'switch', title: 'Switch it up', detail: 'Touch 2 different subjects today', xp: 50, value: Math.min(subjects, 2), target: 2, unit: 'subjects', done: subjects >= 2 },
-    { id: 'double', title: 'Double shift', detail: 'Tick off 2 sessions today', xp: 60, value: Math.min(ticks, 2), target: 2, unit: 'sessions', done: ticks >= 2 },
-    { id: 'deep', title: 'Deep dive', detail: 'A full hour of study today', xp: 100, value: Math.min(minutes, 60), target: 60, unit: 'min', done: minutes >= 60 },
+    { id: 'warm-up', title: 'Échauffement', detail: 'Étudie 15 minutes aujourd’hui', xp: 40, value: Math.min(minutes, 15), target: 15, unit: 'min', done: minutes >= 15 },
+    { id: 'switch', title: 'Change de matière', detail: 'Touche 2 matières différentes aujourd’hui', xp: 50, value: Math.min(subjects, 2), target: 2, unit: 'matières', done: subjects >= 2 },
+    { id: 'double', title: 'Double service', detail: 'Coche 2 séances aujourd’hui', xp: 60, value: Math.min(ticks, 2), target: 2, unit: 'séances', done: ticks >= 2 },
+    { id: 'deep', title: 'Plongée profonde', detail: 'Une heure complète de travail aujourd’hui', xp: 100, value: Math.min(minutes, 60), target: 60, unit: 'min', done: minutes >= 60 },
   ]
 }
 
@@ -124,12 +124,12 @@ export function badgesFor(items: Item[], log: LogEntry[], today: ISODate): Badge
   const readyTests = pastTests.filter((t) => readiness(t, items, log, today).done >= 0.8).length
   const share = (value: number, target: number) => Math.max(0, Math.min(1, value / target))
   return [
-    { id: 'first-step', title: 'First step', detail: 'Log your first minutes', icon: 'sparkles', earned: minutes > 0, progress: share(minutes, 1) },
-    { id: 'week-one', title: 'Week one', detail: 'Keep a 7-day streak', icon: 'flame', earned: s.days >= 7, progress: share(s.days, 7) },
-    { id: 'ten-hours', title: 'Ten hours in', detail: 'Study for 10 hours in total', icon: 'hourglass', earned: minutes >= 600, progress: share(minutes, 600) },
-    { id: 'architect', title: 'Architect', detail: 'Plan 8 sessions at once', icon: 'compass', earned: items.length >= 8, progress: share(items.length, 8) },
-    { id: 'finisher', title: 'Finisher', detail: 'Tick off 10 sessions', icon: 'trophy', earned: ticks >= 10, progress: share(ticks, 10) },
-    { id: 'boss-slayer', title: 'Boss slayer', detail: 'Be 80% ready for a test', icon: 'target', earned: readyTests > 0, progress: share(readyTests, 1) },
+    { id: 'first-step', title: 'Premier pas', detail: 'Enregistre tes premières minutes', icon: 'sparkles', earned: minutes > 0, progress: share(minutes, 1) },
+    { id: 'week-one', title: 'Première semaine', detail: 'Tiens une série de 7 jours', icon: 'flame', earned: s.days >= 7, progress: share(s.days, 7) },
+    { id: 'ten-hours', title: 'Dix heures au compteur', detail: 'Étudie 10 heures au total', icon: 'hourglass', earned: minutes >= 600, progress: share(minutes, 600) },
+    { id: 'architect', title: 'Architecte', detail: 'Planifie 8 séances d’un coup', icon: 'compass', earned: items.length >= 8, progress: share(items.length, 8) },
+    { id: 'finisher', title: 'Finisseur', detail: 'Coche 10 séances', icon: 'trophy', earned: ticks >= 10, progress: share(ticks, 10) },
+    { id: 'boss-slayer', title: 'Tueur de boss', detail: 'Sois prêt à 80 % pour un contrôle', icon: 'target', earned: readyTests > 0, progress: share(readyTests, 1) },
   ]
 }
 

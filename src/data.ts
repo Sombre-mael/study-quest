@@ -32,23 +32,23 @@ import { addDays, type ISODate } from './lib/dates'
 export const copy = {
   brand: 'Study Quest',
   headline: 'Study Quest',
-  subcopy: 'Turn revision into a quest: plan your sessions, earn XP, and take on every test like a boss.',
-  cta: 'Start your quest',
-  planTitle: 'Plan for a test',
-  planIntro: 'Pick the subject and the test date. We spread study sessions across the days before it.',
-  planConfirm: 'Add to planner',
-  addSession: 'Add session',
-  resetDemo: 'Reset to the sample plan',
-  emptyDay: 'Nothing planned',
-  onboardingTitle: 'Your planner is wide open',
-  onboardingBody: 'Tell it when your next test is and it lays out the study sessions for you. Then focus, tick them off, and watch your progress add up.',
-  statsTitle: 'Progress',
-  statsIntro: 'How your studying is adding up.',
-  questsTitle: 'Quest log',
-  questsIntro: 'Level up, clear today\'s quests, collect badges and wear down the bosses before exam day.',
-  subjectsTitle: 'Subjects',
-  subjectsIntro: 'The colours and icons on every card. Rename, recolour or add your own.',
-  styleguideTitle: 'Style guide',
+  subcopy: 'Transforme tes révisions en quête : planifie tes séances, gagne de l’XP et affronte chaque contrôle comme un boss.',
+  cta: 'Commence ta quête',
+  planTitle: 'Planifier un contrôle',
+  planIntro: 'Choisis la matière et la date du contrôle. On répartit les séances de révision sur les jours qui précèdent.',
+  planConfirm: 'Ajouter au planning',
+  addSession: 'Ajouter une séance',
+  resetDemo: 'Revenir au planning d’exemple',
+  emptyDay: 'Rien de prévu',
+  onboardingTitle: 'Ton planning est grand ouvert',
+  onboardingBody: 'Indique la date de ton prochain contrôle et il répartit les séances pour toi. Ensuite, concentre-toi, coche les séances et regarde ta progression grimper.',
+  statsTitle: 'Progression',
+  statsIntro: 'Où en sont tes révisions.',
+  questsTitle: 'Journal de quêtes',
+  questsIntro: 'Monte de niveau, boucle les quêtes du jour, collectionne les badges et entame les boss avant le jour de l’examen.',
+  subjectsTitle: 'Matières',
+  subjectsIntro: 'Les couleurs et icônes de chaque carte. Renomme, recolore ou ajoute les tiennes.',
+  styleguideTitle: 'Guide de style',
 }
 
 /**
@@ -90,16 +90,16 @@ export type IconKey = keyof typeof subjectIcons
 export const subjectColors = [
   { name: 'Violet', value: '#7c3aed' },
   { name: 'Orange', value: '#f97316' },
-  { name: 'Ink', value: '#0a0a0a' },
-  { name: 'Sun', value: '#fbbf24' },
-  { name: 'Green', value: '#16a34a' },
-  { name: 'Blue', value: '#2563eb' },
-  { name: 'Pink', value: '#e11d74' },
+  { name: 'Encre', value: '#0a0a0a' },
+  { name: 'Soleil', value: '#fbbf24' },
+  { name: 'Vert', value: '#16a34a' },
+  { name: 'Bleu', value: '#2563eb' },
+  { name: 'Rose', value: '#e11d74' },
   { name: 'Cyan', value: '#0891b2' },
-  { name: 'Red', value: '#dc2626' },
-  { name: 'Teal', value: '#0b8078' },
+  { name: 'Rouge', value: '#dc2626' },
+  { name: 'Sarcelle', value: '#0b8078' },
   { name: 'Indigo', value: '#4f46e5' },
-  { name: 'Stone', value: '#78716c' },
+  { name: 'Pierre', value: '#78716c' },
 ]
 
 export type Subject = {
@@ -111,18 +111,18 @@ export type Subject = {
 }
 
 export const seedSubjects: Subject[] = [
-  { id: 'chemistry', name: 'Chemistry', color: '#7c3aed', icon: 'flask' },
+  { id: 'chemistry', name: 'Chimie', color: '#7c3aed', icon: 'flask' },
   { id: 'maths', name: 'Maths', color: '#f97316', icon: 'calculator' },
-  { id: 'english', name: 'English', color: '#0a0a0a', icon: 'book' },
-  { id: 'history', name: 'History', color: '#fbbf24', icon: 'hourglass' },
-  { id: 'biology', name: 'Biology', color: '#16a34a', icon: 'leaf' },
-  { id: 'physics', name: 'Physics', color: '#2563eb', icon: 'atom' },
-  { id: 'languages', name: 'Languages', color: '#e11d74', icon: 'languages' },
-  { id: 'geography', name: 'Geography', color: '#0891b2', icon: 'globe' },
+  { id: 'english', name: 'Anglais', color: '#0a0a0a', icon: 'book' },
+  { id: 'history', name: 'Histoire', color: '#fbbf24', icon: 'hourglass' },
+  { id: 'biology', name: 'Biologie', color: '#16a34a', icon: 'leaf' },
+  { id: 'physics', name: 'Physique', color: '#2563eb', icon: 'atom' },
+  { id: 'languages', name: 'Langues', color: '#e11d74', icon: 'languages' },
+  { id: 'geography', name: 'Géographie', color: '#0891b2', icon: 'globe' },
 ]
 
 /** Shown when a card points at a subject that has since been deleted. */
-export const missingSubject: Subject = { id: '?', name: 'No subject', color: '#94a3a2', icon: 'book' }
+export const missingSubject: Subject = { id: '?', name: 'Sans matière', color: '#94a3a2', icon: 'book' }
 
 export type Item = {
   id: string
@@ -172,9 +172,9 @@ export const readinessWindowDays = 21
 
 /** Study techniques the planner cycles through, first session to last. */
 export const techniques = {
-  first: ['recap', 'notes read-through'],
-  middle: ['flashcards', 'practice questions', 'key terms', 'mind map'],
-  last: ['past paper', 'final review'],
+  first: ['résumé', 'relecture des notes'],
+  middle: ['fiches', 'exercices', 'mots-clés', 'carte mentale'],
+  last: ['annale', 'révision finale'],
 }
 
 export const durationOptions = [15, 20, 30, 45, 60, 90]
@@ -185,20 +185,20 @@ export function seedItems(today: ISODate): Item[] {
   const d = (n: number) => addDays(today, n)
   const testId = 'seed-chem-test'
   const rows: Array<Omit<Item, 'order'>> = [
-    { id: 'seed-1', kind: 'session', subject: 'biology', title: 'Photosynthesis', subtitle: 'Calvin cycle', minutes: 40, date: d(-2) },
-    { id: 'seed-2', kind: 'session', subject: 'languages', title: 'French vocab', subtitle: 'Unit 4 — travel', minutes: 20, date: d(-2) },
-    { id: 'seed-3', kind: 'session', subject: 'chemistry', title: 'Chemistry equations', minutes: 30, date: d(-1), testId },
-    { id: 'seed-4', kind: 'session', subject: 'maths', title: 'Maths past paper', subtitle: '2023 paper 2, timed', minutes: 60, date: d(0) },
-    { id: 'seed-5', kind: 'session', subject: 'english', title: 'Flashcards', minutes: 20, date: d(0) },
-    { id: 'seed-6', kind: 'session', subject: 'history', title: 'History essay plan', subtitle: 'Causes of WW1 — three points', minutes: 90, date: d(1) },
-    { id: 'seed-7', kind: 'session', subject: 'biology', title: 'Biology recap', minutes: 45, date: d(2) },
-    { id: testId, kind: 'test', subject: 'chemistry', title: 'Chemistry test', minutes: 0, date: d(2), target: 150 },
-    { id: 'seed-8', kind: 'session', subject: 'physics', title: 'Forces worksheet', subtitle: 'Questions 1–12', minutes: 30, date: d(3) },
-    { id: 'seed-9', kind: 'session', subject: 'geography', title: 'Rivers case study', minutes: 25, date: d(4) },
-    { id: 'seed-10', kind: 'session', subject: 'maths', title: 'Maths flashcards', subtitle: 'Trig identities', minutes: 20, date: d(5) },
-    { id: 'seed-11', kind: 'test', subject: 'maths', title: 'Maths test', minutes: 0, date: d(6), target: 240 },
-    { id: 'seed-12', kind: 'session', subject: 'history', title: 'Source analysis', subtitle: 'Propaganda posters', minutes: 45, date: d(8) },
-    { id: 'seed-13', kind: 'test', subject: 'history', title: 'History mock', minutes: 0, date: d(12), target: 240 },
+    { id: 'seed-1', kind: 'session', subject: 'biology', title: 'Photosynthèse', subtitle: 'Cycle de Calvin', minutes: 40, date: d(-2) },
+    { id: 'seed-2', kind: 'session', subject: 'languages', title: 'Vocabulaire espagnol', subtitle: 'Unité 4 — les voyages', minutes: 20, date: d(-2) },
+    { id: 'seed-3', kind: 'session', subject: 'chemistry', title: 'Équations chimiques', minutes: 30, date: d(-1), testId },
+    { id: 'seed-4', kind: 'session', subject: 'maths', title: 'Annale de maths', subtitle: 'Sujet 2023, chrono', minutes: 60, date: d(0) },
+    { id: 'seed-5', kind: 'session', subject: 'english', title: 'Fiches de vocabulaire', minutes: 20, date: d(0) },
+    { id: 'seed-6', kind: 'session', subject: 'history', title: 'Plan de dissertation', subtitle: 'Causes de la Grande Guerre — trois points', minutes: 90, date: d(1) },
+    { id: 'seed-7', kind: 'session', subject: 'biology', title: 'Révision de biologie', minutes: 45, date: d(2) },
+    { id: testId, kind: 'test', subject: 'chemistry', title: 'Contrôle de chimie', minutes: 0, date: d(2), target: 150 },
+    { id: 'seed-8', kind: 'session', subject: 'physics', title: 'Exercices sur les forces', subtitle: 'Exercices 1 à 12', minutes: 30, date: d(3) },
+    { id: 'seed-9', kind: 'session', subject: 'geography', title: 'Étude de cas : les fleuves', minutes: 25, date: d(4) },
+    { id: 'seed-10', kind: 'session', subject: 'maths', title: 'Fiches de maths', subtitle: 'Identités trigonométriques', minutes: 20, date: d(5) },
+    { id: 'seed-11', kind: 'test', subject: 'maths', title: 'Contrôle de maths', minutes: 0, date: d(6), target: 240 },
+    { id: 'seed-12', kind: 'session', subject: 'history', title: 'Analyse de documents', subtitle: 'Affiches de propagande', minutes: 45, date: d(8) },
+    { id: 'seed-13', kind: 'test', subject: 'history', title: 'Examen blanc d’histoire', minutes: 0, date: d(12), target: 240 },
   ]
   const perDay = new Map<string, number>()
   return rows.map((r) => {

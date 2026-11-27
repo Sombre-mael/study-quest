@@ -40,7 +40,7 @@ export function WeekView({
   const go = (d: ISODate) => navigate(`/week?d=${d}`, { replace: true })
 
   return (
-    <section aria-label="Week view" className="flex flex-1 flex-col pb-[13px]" style={{ '--board-pad': 'clamp(16px, 2.8vw, 40px)' } as CSSProperties}>
+    <section aria-label="Vue semaine" className="flex flex-1 flex-col pb-[13px]" style={{ '--board-pad': 'clamp(16px, 2.8vw, 40px)' } as CSSProperties}>
       <CalendarToolbar
         unit="week"
         label={weekLabel(start)}
@@ -51,7 +51,7 @@ export function WeekView({
         extra={
           <Button variant="glass" size="sm" onClick={() => navigate(`/print?d=${start}`)}>
             <Printer />
-            Print week
+            Imprimer la semaine
           </Button>
         }
       />
@@ -74,7 +74,7 @@ export function WeekView({
           />
         ))}
       </div>
-      <p className="sr-only">Week of {longDayLabel(start)}</p>
+      <p className="sr-only">Semaine du {longDayLabel(start)}</p>
     </section>
   )
 }

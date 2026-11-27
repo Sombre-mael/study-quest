@@ -21,8 +21,8 @@ import { navigate } from '../lib/router'
 import { useSubjects } from '../lib/subjects'
 import { PageShell } from './PageShell'
 
-type Range = 'Week' | '30 days' | 'All time'
-const ranges: Range[] = ['Week', '30 days', 'All time']
+type Range = 'Semaine' | '30 jours' | 'Tout'
+const ranges: Range[] = ['Semaine', '30 jours', 'Tout']
 
 /** Hours per subject, the streak, and a countdown to every test with how ready you are. */
 export function StatsPage({
@@ -39,8 +39,8 @@ export function StatsPage({
   onPlan: () => void
 }) {
   const { get } = useSubjects()
-  const [range, setRange] = useState<Range>('Week')
-  const from = range === 'Week' ? addDays(today, -6) : range === '30 days' ? addDays(today, -29) : null
+  const [range, setRange] = useState<Range>('Semaine')
+  const from = range === 'Semaine' ? addDays(today, -6) : range === '30 jours' ? addDays(today, -29) : null
 
   const bySubject = useMemo(() => minutesBySubject(log, from, today), [log, from, today])
   const total = [...bySubject.values()].reduce((a, b) => a + b, 0)
@@ -60,7 +60,7 @@ export function StatsPage({
   const days = dayRange(addDays(today, -13), today).map((d) => ({
     date: d,
     label: longDayLabel(d),
-    short: fromISO(d).toLocaleDateString('en-GB', { weekday: 'narrow' }),
+    short: fromISO(d).toLocaleDateString('fr-FR', { weekday: 'narrow' }),
     value: minutesOn(log, d),
     today: d === today,
   }))
@@ -73,44 +73,44 @@ export function StatsPage({
       <PageHeader
         title={copy.statsTitle}
         intro={copy.statsIntro}
-        actions={<Segmented name="Time range" tone="glass" value={range} options={ranges} onChange={setRange} className="min-w-[280px]" />}
+        actions={<Segmented name="Période" tone="glass" value={range} options={ranges} onChange={setRange} className="min-w-[280px]" />}
       />
 
       <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
-        <StatTile label="Studied" icon={<Clock />} value={total ? formatDuration(total) : '0 min'} caption={range === 'All time' ? 'Since you started' : `In the last ${range === 'Week' ? '7' : '30'} days`} />
+        <StatTile label="Révisé" icon={<Clock />} value={total ? formatDuration(total) : '0 min'} caption={range === 'Tout' ? 'Depuis le début' : `Sur les ${range === 'Semaine' ? '7' : '30'} derniers jours`} />
         <StatTile
-          label="Streak"
+          label="Série"
           icon={<Flame />}
           delay={0.05}
-          value={`${s.days} ${s.days === 1 ? 'day' : 'days'}`}
-          caption={s.days === 0 ? 'Study today to start one' : s.studiedToday ? 'Including today' : 'Study today to keep it'}
+          value={`${s.days} ${s.days === 1 ? 'jour' : 'jours'}`}
+          caption={s.days === 0 ? 'Révise aujourd’hui pour en lancer une' : s.studiedToday ? 'Journée d’aujourd’hui incluse' : 'Révise aujourd’hui pour la garder'}
         >
-          <div className="flex gap-[3px]" role="img" aria-label={`Studied on ${last14.filter((d) => studiedDays.has(d)).length} of the last 14 days`}>
+          <div className="flex gap-[3px]" role="img" aria-label={`Révisions ${last14.filter((d) => studiedDays.has(d)).length} jours sur les 14 derniers`}>
             {last14.map((d) => (
               <span key={d} title={dayLabel(d)} className={cx('h-2 flex-1 rounded-[2px]', studiedDays.has(d) ? 'bg-teal-700' : 'bg-[#e3eaea]', d === today && 'ring-2 ring-teal-700/25')} />
             ))}
           </div>
         </StatTile>
-        <StatTile label="Sessions done" icon={<CalendarCheck />} delay={0.1} value={doneCount} caption={range === 'All time' ? 'Ticked off so far' : 'Ticked off in this range'} />
+        <StatTile label="Séances faites" icon={<CalendarCheck />} delay={0.1} value={doneCount} caption={range === 'Tout' ? 'Cochées depuis le début' : 'Cochées sur la période'} />
         <StatTile
-          label="Next test"
+          label="Prochain contrôle"
           icon={<Flag />}
           delay={0.15}
-          value={next ? (diffDays(next.date, today) === 0 ? 'Today' : `${diffDays(next.date, today)} ${diffDays(next.date, today) === 1 ? 'day' : 'days'}`) : '—'}
-          caption={next ? `${next.title}, ${dayLabel(next.date)}` : 'No tests planned'}
+          value={next ? (diffDays(next.date, today) === 0 ? 'Aujourd’hui' : `${diffDays(next.date, today)} ${diffDays(next.date, today) === 1 ? 'jour' : 'jours'}`) : '—'}
+          caption={next ? `${next.title}, ${dayLabel(next.date)}` : 'Aucun contrôle planifié'}
         />
       </div>
 
       <div className="mt-3.5 grid gap-3.5 lg:grid-cols-[1.15fr_1fr]">
-        <Panel title="Hours per subject" action={<span className="text-[13px] text-ink-soft tabular-nums">{formatDuration(total || 0)} total</span>}>
+        <Panel title="Heures par matière" action={<span className="text-[13px] text-ink-soft tabular-nums">{formatDuration(total || 0)} au total</span>}>
           {bars.length ? (
-            <BarChart data={bars} format={formatDuration} label={`Minutes studied per subject, ${range.toLowerCase()}`} />
+            <BarChart data={bars} format={formatDuration} label={`Minutes révisées par matière, ${range.toLowerCase()}`} />
           ) : (
-            <EmptyState icon={<ChartColumn />} title="No study logged in this range" body="Finish a focus session or tick a card off and it shows up here." />
+            <EmptyState icon={<ChartColumn />} title="Aucune révision sur la période" body="Termine une séance de concentration ou coche une carte : elle apparaîtra ici." />
           )}
         </Panel>
 
-        <Panel title="Upcoming tests" action={<Button variant="secondary" size="sm" onClick={onPlan}><Sparkles />Plan a test</Button>}>
+        <Panel title="Contrôles à venir" action={<Button variant="secondary" size="sm" onClick={onPlan}><Sparkles />Planifier un contrôle</Button>}>
           {tests.length ? (
             <ul className="divide-y divide-line">
               {tests.map((t, i) => {
@@ -130,14 +130,14 @@ export function StatsPage({
                           <button
                             type="button"
                             onClick={() => navigate(`/?d=${t.date}`)}
-                            aria-label={`${t.title}, open on the board`}
+                            aria-label={`${t.title}, ouvrir dans le planning`}
                             className="text-left after:absolute after:inset-0 after:rounded-[2px] after:content-[''] hover:underline"
                           >
                             {t.title}
                           </button>
                         </p>
                         <p className="text-[13px] text-ink-soft">
-                          {countdown(t.date, today)} · {formatDuration(r.studied)} of {formatDuration(r.target)} studied
+                          {countdown(t.date, today)} · {formatDuration(r.studied)} sur {formatDuration(r.target)} révisées
                         </p>
                       </div>
                       <SubjectChip subject={t.subject} size={22} />
@@ -150,17 +150,17 @@ export function StatsPage({
               })}
             </ul>
           ) : (
-            <EmptyState icon={<Flag />} title="No tests coming up" body="Add a test and the planner spreads sessions before it." actions={<Button onClick={onPlan}>Plan a test</Button>} />
+            <EmptyState icon={<Flag />} title="Aucun contrôle à venir" body="Ajoute un contrôle : le planning répartit des séances avant la date." actions={<Button onClick={onPlan}>Planifier un contrôle</Button>} />
           )}
         </Panel>
       </div>
 
-      <Panel title="Last 14 days" className="mt-3.5" action={<span className="text-[13px] text-ink-soft tabular-nums">{formatDuration(fortnight || 0)}</span>}>
+      <Panel title="14 derniers jours" className="mt-3.5" action={<span className="text-[13px] text-ink-soft tabular-nums">{formatDuration(fortnight || 0)}</span>}>
         <DayBars
           data={days}
           limit={settings.dailyLimit}
           format={formatDuration}
-          label={`Minutes studied per day over the last 14 days: ${days.map((d) => `${dayLabel(d.date)} ${d.value}`).join(', ')}`}
+          label={`Minutes révisées par jour sur les 14 derniers jours : ${days.map((d) => `${dayLabel(d.date)} ${d.value}`).join(', ')}`}
         />
       </Panel>
     </PageShell>

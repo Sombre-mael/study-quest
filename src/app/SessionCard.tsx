@@ -110,23 +110,23 @@ export function SessionCard({
 
   const menu: MenuItem[] = isTest
     ? [
-        { label: 'Edit test', icon: <Pencil />, onSelect: () => actions.edit(item) },
-        { label: 'Re-plan sessions', icon: <RotateCcw />, onSelect: () => actions.replan(item) },
-        { label: 'Move a day earlier', icon: <CalendarArrowUp />, onSelect: () => actions.shift(item, -1) },
-        { label: 'Move a day later', icon: <CalendarArrowDown />, onSelect: () => actions.shift(item, 1) },
+        { label: 'Modifier le contrôle', icon: <Pencil />, onSelect: () => actions.edit(item) },
+        { label: 'Replanifier les séances', icon: <RotateCcw />, onSelect: () => actions.replan(item) },
+        { label: 'Avancer d’un jour', icon: <CalendarArrowUp />, onSelect: () => actions.shift(item, -1) },
+        { label: 'Reculer d’un jour', icon: <CalendarArrowDown />, onSelect: () => actions.shift(item, 1) },
         { type: 'separator' },
-        { label: 'Delete test', icon: <Trash2 />, danger: true, onSelect: () => actions.remove(item) },
+        { label: 'Supprimer le contrôle', icon: <Trash2 />, danger: true, onSelect: () => actions.remove(item) },
       ]
     : [
-        ...(item.done ? [] : [{ label: 'Start focus', icon: <Timer />, onSelect: () => actions.focus(item) } satisfies MenuItem]),
-        { label: 'Edit', icon: <Pencil />, onSelect: () => actions.edit(item) },
-        { label: item.done ? 'Mark not done' : 'Mark done', icon: item.done ? <Undo2 /> : <Check />, onSelect: () => actions.toggleDone(item) },
-        { label: 'Duplicate', icon: <Copy />, onSelect: () => actions.duplicate(item) },
-        { label: 'Warm-up game (+XP)', icon: <Gamepad2 />, onSelect: () => actions.warmUp(item) },
-        { label: 'Move to day before', icon: <CalendarArrowUp />, onSelect: () => actions.shift(item, -1) },
-        { label: 'Move to next day', icon: <CalendarArrowDown />, onSelect: () => actions.shift(item, 1) },
+        ...(item.done ? [] : [{ label: 'Lancer la concentration', icon: <Timer />, onSelect: () => actions.focus(item) } satisfies MenuItem]),
+        { label: 'Modifier', icon: <Pencil />, onSelect: () => actions.edit(item) },
+        { label: item.done ? 'Marquer non faite' : 'Marquer faite', icon: item.done ? <Undo2 /> : <Check />, onSelect: () => actions.toggleDone(item) },
+        { label: 'Dupliquer', icon: <Copy />, onSelect: () => actions.duplicate(item) },
+        { label: 'Échauffement (+XP)', icon: <Gamepad2 />, onSelect: () => actions.warmUp(item) },
+        { label: 'Déplacer au jour précédent', icon: <CalendarArrowUp />, onSelect: () => actions.shift(item, -1) },
+        { label: 'Déplacer au jour suivant', icon: <CalendarArrowDown />, onSelect: () => actions.shift(item, 1) },
         { type: 'separator' },
-        { label: 'Delete', icon: <Trash2 />, danger: true, onSelect: () => actions.remove(item) },
+        { label: 'Supprimer', icon: <Trash2 />, danger: true, onSelect: () => actions.remove(item) },
       ]
 
   return (
@@ -172,7 +172,7 @@ export function SessionCard({
         <div className="-mt-[2px] -mr-[2px] flex items-center max-sm:-mt-1.5 max-sm:-mr-1.5">
           {!isTest && !item.done && !compact && (
             <IconButton
-              label={`Start focus on ${item.title}`}
+              label={`Lancer la concentration sur ${item.title}`}
               size="sm"
               onClick={() => actions.focus(item)}
               className="text-teal-700 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
@@ -182,7 +182,7 @@ export function SessionCard({
           )}
           <IconButton
             ref={menuButton}
-            label={`Options for ${item.title}`}
+            label={`Options pour ${item.title}`}
             size="sm"
             aria-haspopup="menu"
             aria-expanded={menuOpen}
@@ -209,13 +209,13 @@ export function SessionCard({
         ) : (
           <span
             className={cx('text-[12px] font-semibold tabular-nums', item.done ? 'text-ink-soft' : 'text-teal-700')}
-            title={item.done ? `${item.minutes + XP_PER_TICK} XP earned` : `Worth ${item.minutes + XP_PER_TICK} XP`}
+            title={item.done ? `${item.minutes + XP_PER_TICK} XP gagnés` : `Vaut ${item.minutes + XP_PER_TICK} XP`}
           >
             +{item.minutes + XP_PER_TICK} XP
           </span>
         )}
       </div>
-      <Menu label={`${item.title} options`} anchor={menuButton.current} open={menuOpen} onClose={() => setMenuOpen(false)} items={menu} />
+      <Menu label={`Options de ${item.title}`} anchor={menuButton.current} open={menuOpen} onClose={() => setMenuOpen(false)} items={menu} />
     </motion.div>
   )
 }

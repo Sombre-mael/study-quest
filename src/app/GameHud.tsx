@@ -11,13 +11,13 @@ import { Link } from '../lib/router'
  */
 export function GameHud({ game }: { game: GameState }) {
   const { level, streak } = game
-  const label = `Level ${level.level}, ${level.rank}. ${level.into} of ${level.span} XP towards level ${level.level + 1}. ${streak.days} day streak. Open the quest log.`
+  const label = `Niveau ${level.level}, ${level.rank}. ${level.into} XP sur ${level.span} avant le niveau ${level.level + 1}. Série de ${streak.days} jours. Ouvrir le journal de quêtes.`
   return (
     <>
       <Link
         href="/quests"
         aria-label={label}
-        title={`Level ${level.level} · ${level.into}/${level.span} XP`}
+        title={`Niveau ${level.level} · ${level.into}/${level.span} XP`}
         className="hidden items-center gap-2.5 rounded-[2px] bg-white/12 py-1 pr-3 pl-1 text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.18)] transition-colors hover:bg-white/20 max-sm:hidden md:flex"
       >
         <span className="relative grid size-8 shrink-0 place-items-center rounded-[2px] bg-[#ffd166] text-[#10201f] shadow-[inset_0_0_0_2px_#10201f]">
@@ -25,7 +25,7 @@ export function GameHud({ game }: { game: GameState }) {
         </span>
         <span className="flex flex-col gap-[5px]">
           <span className="text-[10px] leading-none font-semibold tracking-[0.13em] text-white/85 uppercase">
-            {level.rank} · {level.xp.toLocaleString('en-GB')} XP
+            {level.rank} · {level.xp.toLocaleString('fr-FR')} XP
           </span>
           <span className="relative block h-2 w-[82px] overflow-hidden rounded-[2px] bg-white/20 shadow-[inset_0_0_0_1px_rgb(0_0_0/0.25)]">
             <motion.span
@@ -72,9 +72,9 @@ export function LevelUpBanner({ level }: { level: { level: number; rank: string 
               <Sparkles size={20} aria-hidden />
             </span>
             <div>
-              <p className="text-[10.5px] font-semibold tracking-[0.14em] text-teal-700 uppercase">Level up</p>
+              <p className="text-[10.5px] font-semibold tracking-[0.14em] text-teal-700 uppercase">Niveau supérieur</p>
               <p className="text-[15px] leading-tight font-semibold">
-                Level {level.level} · {level.rank}
+                Niveau {level.level} · {level.rank}
               </p>
             </div>
           </div>

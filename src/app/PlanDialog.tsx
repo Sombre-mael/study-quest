@@ -85,7 +85,7 @@ export function PlanDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      title={existing ? `Re-plan ${existing.title}` : copy.planTitle}
+      title={existing ? `Replanifier ${existing.title}` : copy.planTitle}
       description={copy.planIntro}
       width={560}
       footer={
@@ -96,11 +96,11 @@ export function PlanDialog({
             </Button>
           )}
           <Button variant="ghost" onClick={onClose} className={existing ? 'ml-auto' : undefined}>
-            Cancel
+            Annuler
           </Button>
           <Button onClick={confirm} disabled={tooSoon}>
             <Sparkles />
-            {existing ? 'Replace sessions' : copy.planConfirm}
+            {existing ? 'Remplacer les séances' : copy.planConfirm}
           </Button>
         </>
       }
@@ -112,22 +112,22 @@ export function PlanDialog({
           confirm()
         }}
       >
-        <FieldGroup label="Subject">
+        <FieldGroup label="Matière">
           <SubjectPicker value={subject} onChange={setSubject} />
         </FieldGroup>
         <div className="grid gap-3 sm:grid-cols-[1fr_170px]">
-          <Field label="Test name">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`${name} test`} />
+          <Field label="Nom du contrôle">
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`Contrôle de ${name}`} />
           </Field>
-          <Field label="Test date">
+          <Field label="Date du contrôle">
             <Input type="date" value={date} min={addDays(today, 1)} onChange={(e) => e.target.value && setDate(e.target.value)} required />
           </Field>
         </div>
-        <FieldGroup label="Total study time" hint={formatDuration(total)}>
-          <Segmented name="Total study time" value={total} options={totalOptions} onChange={setTotal} format={(v) => `${v / 60}h`} />
+        <FieldGroup label="Temps de révision total" hint={formatDuration(total)}>
+          <Segmented name="Temps de révision total" value={total} options={totalOptions} onChange={setTotal} format={(v) => `${v / 60}h`} />
         </FieldGroup>
-        <FieldGroup label="Session length">
-          <Segmented name="Session length" value={length} options={durationOptions} onChange={setLength} format={(v) => (v < 60 ? `${v}m` : formatDuration(v))} />
+        <FieldGroup label="Durée d’une séance">
+          <Segmented name="Durée d’une séance" value={length} options={durationOptions} onChange={setLength} format={(v) => (v < 60 ? `${v} min` : formatDuration(v))} />
         </FieldGroup>
         <button type="submit" hidden />
       </form>
@@ -136,13 +136,13 @@ export function PlanDialog({
         <p className="flex items-center gap-2 px-1 pb-2 text-[13px] font-medium text-ink-soft">
           <CalendarDays size={15} />
           {tooSoon
-            ? 'Pick a test date after today.'
-            : `${plan.sessions.length} sessions over ${plan.days.length} ${plan.days.length === 1 ? 'day' : 'days'}, then the test on ${dayLabel(date)}`}
+            ? 'Choisis une date de contrôle après aujourd’hui.'
+            : `${plan.sessions.length} séances sur ${plan.days.length} ${plan.days.length === 1 ? 'jour' : 'jours'}, puis le contrôle le ${dayLabel(date)}`}
         </p>
         {!tooSoon && overDays > 0 && (
           <p className="mb-2 flex items-start gap-2 rounded-[2px] bg-flag px-2.5 py-2 text-[13px] leading-[1.4] text-flag-ink">
             <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden />
-            {overDays} {overDays === 1 ? 'day goes' : 'days go'} over your {formatDuration(settings.dailyLimit)} daily limit. Use Rebalance on the board to spread them out.
+            {overDays} {overDays === 1 ? 'jour dépasse' : 'jours dépassent'} ta limite quotidienne de {formatDuration(settings.dailyLimit)}. Utilise « Rééquilibrer » sur le planning pour répartir.
           </p>
         )}
         <motion.ul layout className="space-y-1.5">
@@ -162,7 +162,7 @@ export function PlanDialog({
                 <span className="min-w-0 flex-1 truncate text-[13.5px] text-ink">
                   {sessions
                     .map((s, i) => {
-                      const t = s.title.replace(`${name} `, '')
+                      const t = s.title.replace(`${name} – `, '')
                       return i === 0 ? t[0]!.toUpperCase() + t.slice(1) : t
                     })
                     .join(' + ')}

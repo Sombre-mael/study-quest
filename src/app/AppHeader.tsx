@@ -13,7 +13,7 @@ import { GameHud } from './GameHud'
 
 export type PlannerView = 'days' | 'week' | 'month'
 export const viewPaths: Record<PlannerView, string> = { days: '/', week: '/week', month: '/month' }
-const viewLabels: Record<PlannerView, string> = { days: 'Days', week: 'Week', month: 'Month' }
+const viewLabels: Record<PlannerView, string> = { days: 'Jours', week: 'Semaine', month: 'Mois' }
 const viewIcons: Record<PlannerView, ReactElement> = { days: <Columns3 aria-hidden />, week: <CalendarRange aria-hidden />, month: <CalendarDays aria-hidden /> }
 
 /** Days / Week / Month. Lives in the header on wide screens, under the hero on phones. */
@@ -80,37 +80,37 @@ export function AppHeader({
         <Logo label={copy.brand} />
         <GameHud game={game} />
       </div>
-      <nav aria-label="Main" className="flex items-center gap-1 sm:gap-1.5">
+      <nav aria-label="Navigation principale" className="flex items-center gap-1 sm:gap-1.5">
         {view && (
           <div className="mr-1.5 hidden md:block">
-            <ViewSwitcher view={view} name="Planner view" anchor={anchor} />
+            <ViewSwitcher view={view} name="Vue du planning" anchor={anchor} />
           </div>
         )}
         <NavLink href="/quests" active={path === '/quests'} icon={<Swords aria-hidden />}>
-          Quests
+          Quêtes
         </NavLink>
         <NavLink href="/stats" active={path === '/stats'} icon={<ChartColumn aria-hidden />}>
-          Progress
+          Progression
         </NavLink>
         <NavLink href="/subjects" active={path === '/subjects'} icon={<Shapes aria-hidden />}>
-          Subjects
+          Matières
         </NavLink>
-        <IconButton ref={more} tone="dark" label="More" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <IconButton ref={more} tone="dark" label="Plus" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <MoreHorizontal />
         </IconButton>
         <Menu
-          label="More"
+          label="Plus"
           anchor={more.current}
           open={open}
           onClose={() => setOpen(false)}
           items={[
-            { label: 'Daily limit & timer…', icon: <Settings2 />, onSelect: onSettings },
-            { label: 'Print this week', icon: <Printer />, onSelect: () => navigate(`/print${anchor ? `?d=${anchor}` : ''}`) },
-            { label: 'Style guide', icon: <Palette />, onSelect: () => navigate('/styleguide') },
+            { label: 'Limite quotidienne et minuteur…', icon: <Settings2 />, onSelect: onSettings },
+            { label: 'Imprimer cette semaine', icon: <Printer />, onSelect: () => navigate(`/print${anchor ? `?d=${anchor}` : ''}`) },
+            { label: 'Guide de style', icon: <Palette />, onSelect: () => navigate('/styleguide') },
             { type: 'separator' },
             empty
-              ? { label: 'Load the sample plan', icon: <RotateCcw />, onSelect: onSample }
-              : { label: 'Start fresh', icon: <Eraser />, danger: true, onSelect: onFresh },
+              ? { label: 'Charger le planning d’exemple', icon: <RotateCcw />, onSelect: onSample }
+              : { label: 'Repartir de zéro', icon: <Eraser />, danger: true, onSelect: onFresh },
           ]}
         />
       </nav>

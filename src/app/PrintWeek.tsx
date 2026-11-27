@@ -36,25 +36,25 @@ export function PrintWeek({ items, today, anchor }: { items: Item[]; today: ISOD
       <div className="no-print flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-2 py-4">
         <Button variant="glass" size="sm" onClick={() => navigate(`/week?d=${start}`)}>
           <ArrowLeft />
-          Back to week
+          Retour à la semaine
         </Button>
         <div className="flex items-center gap-1">
-          <IconButton tone="dark" label="Previous week" onClick={() => go(addDays(start, -7))}>
+          <IconButton tone="dark" label="Semaine précédente" onClick={() => go(addDays(start, -7))}>
             <ChevronLeft />
           </IconButton>
           <span className="min-w-[120px] text-center text-[15px] font-semibold tabular-nums">{weekLabel(start)}</span>
-          <IconButton tone="dark" label="Next week" onClick={() => go(addDays(start, 7))}>
+          <IconButton tone="dark" label="Semaine suivante" onClick={() => go(addDays(start, 7))}>
             <ChevronRight />
           </IconButton>
         </div>
         <Button variant="pill" size="sm" onClick={() => window.print()} className="px-4">
           <Printer />
-          Print or save PDF
+          Imprimer ou enregistrer en PDF
         </Button>
       </div>
 
       <motion.article
-        aria-label={`Study plan for the week of ${weekLabel(start)}`}
+        aria-label={`Planning de révisions de la semaine du ${weekLabel(start)}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28 }}
@@ -63,19 +63,19 @@ export function PrintWeek({ items, today, anchor }: { items: Item[]; today: ISOD
         <header className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-4">
           <div>
             <p className="text-[13px] font-semibold tracking-[0.06em] text-teal-700 uppercase">{copy.brand}</p>
-            <h1 className="mt-1 text-[clamp(24px,2.4vw,32px)] font-bold tracking-[-0.03em]">Week of {weekLabel(start)}</h1>
+            <h1 className="mt-1 text-[clamp(24px,2.4vw,32px)] font-bold tracking-[-0.03em]">Semaine du {weekLabel(start)}</h1>
           </div>
           <dl className="flex gap-6 text-[13px]">
             <div>
-              <dt className="text-ink-soft">Planned</dt>
+              <dt className="text-ink-soft">Prévu</dt>
               <dd className="text-[18px] font-semibold tabular-nums">{formatTotal(total)}</dd>
             </div>
             <div>
-              <dt className="text-ink-soft">Sessions</dt>
+              <dt className="text-ink-soft">Séances</dt>
               <dd className="text-[18px] font-semibold tabular-nums">{weekItems.filter((i) => i.kind === 'session').length}</dd>
             </div>
             <div>
-              <dt className="text-ink-soft">Tests</dt>
+              <dt className="text-ink-soft">Contrôles</dt>
               <dd className="text-[18px] font-semibold tabular-nums">{weekItems.filter((i) => i.kind === 'test').length}</dd>
             </div>
           </dl>
@@ -88,7 +88,7 @@ export function PrintWeek({ items, today, anchor }: { items: Item[]; today: ISOD
             return (
               <section key={d} className={cx('flex min-h-[120px] flex-col rounded-[2px] bg-[#f3f7f7] p-2.5 lg:min-h-[300px]', d === today && 'shadow-[inset_0_0_0_1.5px_var(--color-teal-700)]')}>
                 <h2 className="flex items-baseline justify-between text-[13.5px]">
-                  <span className="font-semibold">{fromISO(d).toLocaleDateString('en-GB', { weekday: 'short' })}</span>
+                  <span className="font-semibold">{fromISO(d).toLocaleDateString('fr-FR', { weekday: 'short' })}</span>
                   <span className="text-ink-soft tabular-nums">{fromISO(d).getDate()}</span>
                 </h2>
                 <ul className="mt-2 flex flex-1 flex-col gap-1.5">
@@ -111,7 +111,7 @@ export function PrintWeek({ items, today, anchor }: { items: Item[]; today: ISOD
 
         <footer className="mt-4 grid gap-4 border-t border-line pt-4 text-[13px] sm:grid-cols-2">
           <div>
-            <h2 className="font-semibold">By subject</h2>
+            <h2 className="font-semibold">Par matière</h2>
             <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
               {[...subjectTotals.entries()].sort((a, b) => b[1] - a[1]).map(([id, m]) => (
                 <li key={id} className="flex items-center gap-1.5">
@@ -119,19 +119,19 @@ export function PrintWeek({ items, today, anchor }: { items: Item[]; today: ISOD
                   {get(id).name} <span className="text-ink-soft tabular-nums">{formatDuration(m)}</span>
                 </li>
               ))}
-              {subjectTotals.size === 0 && <li className="text-ink-soft">Nothing planned this week</li>}
+              {subjectTotals.size === 0 && <li className="text-ink-soft">Rien de prévu cette semaine</li>}
             </ul>
           </div>
           <div>
-            <h2 className="font-semibold">Tests ahead</h2>
+            <h2 className="font-semibold">Contrôles à venir</h2>
             <ul className="mt-1.5 space-y-1">
               {tests.map((t) => (
                 <li key={t.id} className="flex items-center gap-1.5">
                   <Flag size={13} className="text-flag-ink" aria-hidden />
-                  {t.title} <span className="text-ink-soft">· {fromISO(t.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · {countdown(t.date, today)}</span>
+                  {t.title} <span className="text-ink-soft">· {fromISO(t.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })} · {countdown(t.date, today)}</span>
                 </li>
               ))}
-              {tests.length === 0 && <li className="text-ink-soft">None scheduled</li>}
+              {tests.length === 0 && <li className="text-ink-soft">Aucun pour l’instant</li>}
             </ul>
           </div>
         </footer>

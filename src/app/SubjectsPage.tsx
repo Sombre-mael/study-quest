@@ -55,13 +55,13 @@ export function SubjectsPage({
         actions={
           <Button variant="pill" size="md" onClick={onAdd} className="px-5">
             <Plus />
-            Add subject
+            Ajouter une matière
           </Button>
         }
       />
       {list.length === 0 ? (
         <div className="rounded-column bg-column shadow-[inset_0_0_0_1px_var(--color-column-edge)]">
-          <EmptyState tone="dark" icon={<Shapes />} title="No subjects yet" body="Add the subjects you are studying. Each one gets a colour and an icon for its cards." actions={<Button variant="pill" onClick={onAdd}>Add your first subject</Button>} />
+          <EmptyState tone="dark" icon={<Shapes />} title="Aucune matière pour l’instant" body="Ajoute les matières que tu étudies. Chacune reçoit une couleur et une icône pour ses cartes." actions={<Button variant="pill" onClick={onAdd}>Ajouter ta première matière</Button>} />
         </div>
       ) : (
         <ul className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,12 +84,12 @@ export function SubjectsPage({
                     </button>
                   </h2>
                   <p className="mt-0.5 text-[13.5px] leading-5 text-ink-soft">
-                    {r.upcoming ? `${r.upcoming} upcoming · ${formatDuration(r.minutes)}` : 'Nothing planned'}
-                    {r.tests ? ` · ${r.tests} ${r.tests === 1 ? 'test' : 'tests'}` : ''}
+                    {r.upcoming ? `${r.upcoming} à venir · ${formatDuration(r.minutes)}` : 'Rien de prévu'}
+                    {r.tests ? ` · ${r.tests} ${r.tests === 1 ? 'contrôle' : 'contrôles'}` : ''}
                   </p>
-                  <p className="mt-0.5 text-[13.5px] leading-5 text-ink-soft">{r.studied ? `${formatDuration(r.studied)} studied` : 'No study logged yet'}</p>
+                  <p className="mt-0.5 text-[13.5px] leading-5 text-ink-soft">{r.studied ? `${formatDuration(r.studied)} révisées` : 'Aucune révision enregistrée'}</p>
                 </div>
-                <IconButton label={`Edit ${s.name}`} onClick={() => onEdit(s)} className="relative z-[1] -mt-1 -mr-1.5">
+                <IconButton label={`Modifier ${s.name}`} onClick={() => onEdit(s)} className="relative z-[1] -mt-1 -mr-1.5">
                   <Pencil className="size-4!" />
                 </IconButton>
               </motion.li>
@@ -102,7 +102,7 @@ export function SubjectsPage({
               className="flex h-full min-h-[92px] w-full items-center justify-center gap-2 rounded-column border border-dashed border-white/40 text-[14.5px] font-medium text-white/90 transition-colors hover:border-white/70 hover:bg-white/8 hover:text-white"
             >
               <Plus size={17} aria-hidden />
-              New subject
+              Nouvelle matière
             </button>
           </li>
         </ul>
