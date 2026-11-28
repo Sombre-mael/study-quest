@@ -59,7 +59,7 @@ export function BarChart({ data, format, label }: { data: BarDatum[]; format: (v
           </span>
           <span className="w-[62px] text-right text-[13px] text-ink-soft tabular-nums">{format(d.value)}</span>
           <Tip show={hover === d.id} className="-top-8 left-1/2 -translate-x-1/2">
-            {d.label} · {format(d.value)} · {Math.round((d.value / Math.max(1, total)) * 100)}% of total
+            {d.label} · {format(d.value)} · {Math.round((d.value / Math.max(1, total)) * 100)} % du total
             {d.detail ? ` · ${d.detail}` : ''}
           </Tip>
         </li>
@@ -100,7 +100,7 @@ export function DayBars({ data, limit, format, label }: { data: DayDatum[]; limi
               style={{ minHeight: d.value ? 3 : 0 }}
             />
             <Tip show={hover === d.date} className="bottom-[calc(100%+4px)] left-1/2 -translate-x-1/2">
-              {d.label} · {d.value ? format(d.value) : 'no study'}
+              {d.label} · {d.value ? format(d.value) : 'aucune révision'}
             </Tip>
           </div>
         ))}

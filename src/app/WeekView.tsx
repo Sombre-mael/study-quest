@@ -49,13 +49,13 @@ export function WeekView({
         onToday={() => go(today)}
         isCurrent={start === weekStart(today)}
         extra={
-          <Button variant="glass" size="sm" onClick={() => navigate(`/print?d=${start}`)}>
+          <Button variant="glass" size="sm" onClick={() => navigate(`/print?d=${start}`)} className="max-sm:hidden">
             <Printer />
             Imprimer la semaine
           </Button>
         }
       />
-      <div className="grid flex-1 grid-cols-1 gap-(--col-gap) px-(--board-pad) sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+      <div className="grid flex-1 grid-cols-1 gap-2 px-(--board-pad) sm:grid-cols-2 sm:gap-(--col-gap) lg:grid-cols-4 xl:grid-cols-7">
         {days.map((date, i) => (
           <DayColumn
             key={date}

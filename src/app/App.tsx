@@ -275,7 +275,7 @@ export function App() {
     const empty = items.length === 0
     page = (
       <main id="main" className="relative z-10 flex flex-1 flex-col">
-        <HeroSlot onStart={openPlan} compact={view !== 'days' && items.length > 0} />
+        <HeroSlot onStart={openPlan} compact={view !== 'days' && items.length > 0} slim={items.length > 0} />
         <div className="no-print -mt-2 mb-4 flex justify-center md:hidden">
           <ViewSwitcher view={view} name="Vue du planning (mobile)" anchor={anchor} />
         </div>

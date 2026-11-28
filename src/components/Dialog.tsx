@@ -72,8 +72,10 @@ export function Dialog({
               </IconButton>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-2 sm:px-6">{children}</div>
+            {/* Phones stack the actions full width, so each one is a real thumb
+                target instead of a ragged wrapping row. */}
             {footer && (
-              <div className="flex flex-wrap items-center gap-2 border-t border-line px-5 py-4 pb-[calc(16px_+_env(safe-area-inset-bottom))] sm:px-6 sm:pb-4">
+              <div className="flex flex-wrap items-center gap-2 border-t border-line px-5 py-4 pb-[calc(16px_+_env(safe-area-inset-bottom))] max-sm:flex-col max-sm:items-stretch max-sm:[&>*]:w-full sm:px-6 sm:pb-4">
                 {footer}
               </div>
             )}

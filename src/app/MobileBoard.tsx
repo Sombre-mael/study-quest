@@ -73,7 +73,7 @@ export function MobileBoard({
         ref={strip}
         role="group"
         aria-label="Choisir un jour"
-        className="no-scrollbar -mx-4 flex snap-x gap-1.5 overflow-x-auto px-4 pt-1 pb-1"
+        className="no-scrollbar edge-fade -mx-4 flex snap-x gap-1.5 overflow-x-auto px-4 pt-1 pb-2"
       >
         {days.map((date) => {
           const list = items.filter((i) => i.date === date)

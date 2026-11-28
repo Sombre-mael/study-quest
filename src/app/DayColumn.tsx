@@ -57,7 +57,7 @@ export function DayColumn({
       transition={{ ...spring, delay: entrance.active ? 0.35 + columnDelay : 0 }}
       className={cx(
         'group/col relative flex shrink-0 flex-col rounded-column pt-[13px] transition-[background-color,box-shadow] duration-200',
-        fluid ? 'min-h-[128px] w-full min-w-0 px-[11px] sm:min-h-[220px]' : 'w-(--col-w) snap-start px-[15px]',
+        fluid ? 'min-h-0 w-full min-w-0 px-[11px] sm:min-h-[220px]' : 'w-(--col-w) snap-start px-[15px]',
         hot
           ? 'bg-column-hot shadow-[inset_0_0_0_2px_rgb(255_255_255/0.65),4px_4px_0_rgb(2_22_20/0.3)]'
           : over
@@ -97,7 +97,7 @@ export function DayColumn({
         </motion.button>
       </div>
 
-      <footer className="mt-3 border-t border-white/22 pt-[12px] pb-[13px] text-[15px] leading-[18px] text-white/90">
+      <footer className="mt-1.5 border-t border-white/22 pt-[10px] pb-[11px] text-[15px] leading-[18px] text-white/90 sm:mt-3 sm:pt-[12px] sm:pb-[13px]">
         <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
           <motion.span key={total} initial={entrance.active ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="inline-block tabular-nums">
             {formatTotal(total)}

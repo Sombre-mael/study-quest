@@ -42,7 +42,7 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
               </li>
             ))}
           </ol>
-          <div className="mt-7 flex flex-wrap items-center gap-2">
+          <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center">
             <Button variant="pill" size="md" onClick={onPlan} className="px-5">
               <Sparkles />
               Planifie ton premier contrôle
@@ -52,7 +52,7 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
               Ajouter une séance aujourd’hui
             </Button>
           </div>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+          <div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-1 sm:mt-4 sm:justify-start">
             <Button variant="linkDark" size="sm" onClick={() => navigate('/subjects')}>
               Commence par tes matières
             </Button>

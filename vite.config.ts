@@ -23,7 +23,6 @@ export default defineConfig(({ mode }) => {
       // background, so a deploy reaches installed copies without a prompt.
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.png', 'apple-touch-icon.png'],
         manifest: {
           name: 'Study Quest — planner de révisions',
           short_name: 'Study Quest',
@@ -38,14 +37,17 @@ export default defineConfig(({ mode }) => {
           theme_color: '#04332f',
           background_color: '#04332f',
           categories: ['education', 'productivity'],
+          // Versioned names: an installed app only takes a new home-screen icon
+          // when the manifest's icon URLs change. `ICON_VERSION` in
+          // scripts/generate-icons.mjs names the files; keep the two in sync.
           icons: [
-            { src: 'pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-            { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-            { src: 'pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+            { src: 'pwa-192-v2.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+            { src: 'pwa-512-v2.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: 'pwa-maskable-512-v2.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+          globPatterns: ['**/*.{js,css,html,png,woff2}'],
           navigateFallback: `${base}index.html`,
           cleanupOutdatedCaches: true,
           // The pixel fonts come from Google; caching them keeps the look

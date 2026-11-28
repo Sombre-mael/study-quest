@@ -88,8 +88,8 @@ export function QuestsPage({
             <p className="text-[12px] font-semibold tracking-[0.14em] text-white/75 uppercase">{level.rank}</p>
             <p className="mt-0.5 text-[21px] font-bold tracking-[-0.02em] tabular-nums">
               {level.xp.toLocaleString('fr-FR')} XP
-              <span className="ml-2 text-[13px] font-medium text-white/75">
-                {level.into} / {level.span} avant le niveau {level.level + 1}
+              <span className="mt-0.5 block text-[12.5px] font-medium text-white/75 sm:mt-0 sm:ml-2 sm:inline sm:text-[13px]">
+                {level.into} / {level.span} avant le niveau&nbsp;{level.level + 1}
               </span>
             </p>
             <div

@@ -215,6 +215,13 @@
   text-wrap: balance;
 }
 
+/* A swipeable strip: the content fades out at both edges instead of being
+   cut mid-chip. */
+@utility edge-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+}
+
 /* Horizontal strips on phones: swipeable without a scrollbar. */
 @utility no-scrollbar {
   scrollbar-width: none;
