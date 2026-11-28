@@ -94,6 +94,18 @@ pnpm run typecheck # tsc --noEmit
 `pnpm-workspace.yaml` autorise les scripts de build de `esbuild` et `workerd` ;
 pnpm 11 refuse une installation qui les laisserait non approuvés.
 
+## Héberger sur GitHub Pages
+
+Le site est statique, il se publie donc tel quel : `.github/workflows/pages.yml`
+construit le projet et dépose `dist/client` sur Pages à chaque push sur `main`.
+Il suffit de choisir **GitHub Actions** comme source dans Settings → Pages.
+
+L'application est servie sous `https://sombre-mael.github.io/study-quest/` : le
+`base` de `vite.config.ts` et `src/lib/router.tsx` portent ce préfixe (les routes
+restent écrites `/quests`, `/week`…), et `scripts/postbuild.mjs` copie
+`index.html` en `404.html` pour qu'un lien profond ou un rechargement ouvre
+l'application au lieu du 404 de GitHub.
+
 ## Comment c'est construit
 
 React 19 avec Vite 8, Tailwind CSS v4 (tokens `@theme` dans `src/styles.css`),
