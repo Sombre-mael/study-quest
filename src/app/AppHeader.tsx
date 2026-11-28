@@ -1,4 +1,4 @@
-import { CalendarDays, CalendarRange, ChartColumn, Columns3, Download, Eraser, MoreHorizontal, Palette, Printer, RotateCcw, Settings2, Shapes, Swords, Upload } from 'lucide-react'
+import { CalendarDays, CalendarRange, ChartColumn, Columns3, Download, Eraser, MoreHorizontal, Palette, Printer, RotateCcw, Settings2, Shapes, ShieldAlert, ShieldCheck, Swords, Upload } from 'lucide-react'
 import { useRef, useState, type ReactElement } from 'react'
 
 import { Segmented } from '../components/Field'
@@ -9,6 +9,7 @@ import { copy } from '../data'
 import { cx } from '../lib/cx'
 import type { GameState } from '../lib/game'
 import { Link, navigate } from '../lib/router'
+import type { StoragePersistence } from '../lib/storage'
 import { GameHud } from './GameHud'
 
 export type PlannerView = 'days' | 'week' | 'month'
@@ -64,6 +65,7 @@ export function AppHeader({
   onSample,
   onExport,
   onImport,
+  persistence,
 }: {
   path: string
   view: PlannerView | null
@@ -75,9 +77,23 @@ export function AppHeader({
   onSample: () => void
   onExport: () => void
   onImport: () => void
+  persistence: StoragePersistence
 }) {
   const more = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
+  // A quiet line so the export reads as a safety net, not a random button.
+  const storageNote =
+    persistence === 'persistent'
+      ? ({ type: 'note', label: 'Stockage persistant', icon: <ShieldCheck />, title: 'Le navigateur s’est engagé à garder tes données. Un export de temps en temps reste une bonne habitude.' } as const)
+      : persistence === 'checking'
+        ? null
+        : ({
+            type: 'note',
+            label: 'Stockage non persistant',
+            icon: <ShieldAlert />,
+            warn: true,
+            title: 'Ce navigateur peut effacer tes données (mode privé, espace disque, nettoyage). Exporte une sauvegarde pour la garder.',
+          } as const)
   return (
     <header className="no-print relative z-20 flex h-[62px] shrink-0 items-center justify-between gap-3 px-[clamp(16px,2.8vw,40px)]">
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
@@ -112,6 +128,7 @@ export function AppHeader({
             { label: 'Imprimer cette semaine', icon: <Printer />, onSelect: () => navigate(`/print${anchor ? `?d=${anchor}` : ''}`) },
             { label: 'Guide de style', icon: <Palette />, onSelect: () => navigate('/styleguide') },
             { type: 'separator' },
+            ...(storageNote ? [storageNote] : []),
             { label: 'Exporter mes données', icon: <Download />, onSelect: onExport },
             { label: 'Importer une sauvegarde…', icon: <Upload />, onSelect: onImport },
             { type: 'separator' },

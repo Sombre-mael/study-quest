@@ -12,6 +12,7 @@ import { gameState, rollChest, warmUpSubjects, XP_PER_TICK } from '../lib/game'
 import { readiness, rebalance } from '../lib/insights'
 import type { Plan } from '../lib/plan'
 import { navigate, useRoute } from '../lib/router'
+import { useStoragePersistence } from '../lib/storage'
 import { emptyState, sampleState, usePlanner, type State } from '../lib/store'
 import { SubjectsProvider } from '../lib/subjects'
 import { AppHeader, ViewSwitcher, type PlannerView } from './AppHeader'
@@ -75,6 +76,7 @@ export function App() {
   const [chestPrize, setChestPrize] = useState<number | null>(null)
   const toastId = useRef(0)
   const backupInput = useRef<HTMLInputElement>(null)
+  const persistence = useStoragePersistence()
   const stateRef = useRef(state)
   stateRef.current = state
   const openPlan = useCallback(() => setPlanOpen(true), [])
@@ -390,6 +392,7 @@ export function App() {
             onSample={loadSample}
             onExport={exportData}
             onImport={() => backupInput.current?.click()}
+            persistence={persistence}
           />
           <input
             ref={backupInput}

@@ -7,6 +7,8 @@ import { cx } from '../lib/cx'
 export type MenuItem =
   | { type?: 'item'; label: string; icon?: ReactNode; danger?: boolean; onSelect: () => void }
   | { type: 'separator' }
+  /** A read-only line, for a status that belongs with the actions. */
+  | { type: 'note'; label: string; title?: string; icon?: ReactNode; warn?: boolean }
 
 /**
  * A small popover menu anchored to a trigger element. It renders in a portal
@@ -101,6 +103,19 @@ export function Menu({
           {items.map((item, i) =>
             item.type === 'separator' ? (
               <div key={i} className="mx-2 my-1 h-px bg-line" />
+            ) : item.type === 'note' ? (
+              <p
+                key={i}
+                role="presentation"
+                title={item.title}
+                className={cx(
+                  'flex h-8 items-center gap-2.5 px-2.5 text-[12.5px] leading-[1.2] text-ink-soft max-sm:h-10 [&_svg]:size-[15px] [&_svg]:shrink-0',
+                  item.warn && 'text-[#8a5a12] [&_svg]:text-[#b4761a]',
+                )}
+              >
+                {item.icon}
+                <span className="truncate">{item.label}</span>
+              </p>
             ) : (
               <button
                 key={i}
