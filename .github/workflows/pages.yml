@@ -37,6 +37,8 @@ jobs:
         run: pnpm run typecheck
 
       - name: Construire le site
+        env:
+          SITE_BASE: /study-quest/
         run: pnpm run build
 
       - uses: actions/configure-pages@v5

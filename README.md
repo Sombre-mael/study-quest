@@ -101,10 +101,19 @@ construit le projet et dépose `dist/client` sur Pages à chaque push sur `main`
 Il suffit de choisir **GitHub Actions** comme source dans Settings → Pages.
 
 L'application est servie sous `https://sombre-mael.github.io/study-quest/` : le
-`base` de `vite.config.ts` et `src/lib/router.tsx` portent ce préfixe (les routes
-restent écrites `/quests`, `/week`…), et `scripts/postbuild.mjs` copie
-`index.html` en `404.html` pour qu'un lien profond ou un rechargement ouvre
-l'application au lieu du 404 de GitHub.
+workflow construit avec `SITE_BASE=/study-quest/`, et `src/lib/router.tsx`
+ajoute puis retire ce préfixe autour de routes qui restent écrites `/quests`,
+`/week`… `scripts/postbuild.mjs` copie enfin `index.html` en `404.html` pour
+qu'un lien profond ou un rechargement ouvre l'application au lieu du 404 de
+GitHub.
+
+## Héberger sur Vercel
+
+`vercel.json` décrit tout : `pnpm run build`, sortie `dist/client`, et un
+rewrite vers `index.html` pour les routes côté client. Sans `SITE_BASE`, le
+`base` reste `/`, donc l'import du dépôt dans Vercel fonctionne sans réglage.
+Pense à autoriser pnpm 11 (le `packageManager` de `package.json` s'en charge)
+et à Node 22 ou plus.
 
 ## Comment c'est construit
 
