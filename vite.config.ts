@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
       // background, so a deploy reaches installed copies without a prompt.
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+        includeAssets: ['favicon.png', 'apple-touch-icon.png'],
         manifest: {
           name: 'Study Quest — planner de révisions',
           short_name: 'Study Quest',

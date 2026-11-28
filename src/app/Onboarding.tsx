@@ -2,11 +2,8 @@ import { CalendarPlus, ChartColumn, Sparkles, Timer } from 'lucide-react'
 import { motion } from 'motion/react'
 
 import { Button } from '../components/Button'
-import { DurationPill, TestPill } from '../components/Pill'
-import { SubjectChip } from '../components/SubjectChip'
 import { copy } from '../data'
 import { navigate } from '../lib/router'
-import { useSubjects } from '../lib/subjects'
 
 const steps = [
   { icon: <Sparkles />, title: 'Planifie un contrôle', body: 'Choisis une date ; les séances se répartissent sur les jours d’avant.' },
@@ -16,15 +13,13 @@ const steps = [
 
 /** What a brand-new planner shows in place of the board. */
 export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => void; onAddToday: () => void; onSample: () => void }) {
-  const { list } = useSubjects()
-  const [a, b] = [list[0], list[1] ?? list[0]]
   return (
     <section aria-labelledby="onboarding-title" className="flex flex-1 justify-center px-4 pb-8">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.3 }}
-        className="grid w-full max-w-[920px] items-center gap-8 rounded-column bg-column p-6 shadow-[inset_0_0_0_1px_var(--color-column-edge),inset_0_1px_0_rgb(255_255_255/0.12)] sm:p-8 md:grid-cols-[1fr_300px]"
+        className="grid w-full max-w-[920px] items-center gap-8 rounded-column bg-column p-6 shadow-[inset_0_0_0_1px_var(--color-column-edge),inset_0_1px_0_rgb(255_255_255/0.12)] sm:p-8 md:grid-cols-[1fr_280px]"
       >
         <div>
           <h2 id="onboarding-title" className="text-[clamp(24px,2.4vw,30px)] leading-[1.15] font-bold tracking-[-0.025em]">
@@ -66,36 +61,26 @@ export function Onboarding({ onPlan, onAddToday, onSample }: { onPlan: () => voi
           </div>
         </div>
 
-        {/* A little stack of the cards to come. Decorative. */}
-        <div aria-hidden className="relative mx-auto hidden h-[260px] w-[280px] md:block">
-          {a && (
-            <motion.div
-              initial={{ opacity: 0, rotate: -8, y: 20 }}
-              animate={{ opacity: 1, rotate: -6, y: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.55 }}
-              className="absolute top-2 left-0 w-[220px] rounded-card bg-card p-3 text-ink shadow-card-hover"
-            >
-              <SubjectChip subject={a} />
-              <p className="mt-2.5 text-[15px] font-medium">Révision de {a.name}</p>
-              <div className="mt-2">
-                <DurationPill minutes={30} />
-              </div>
-            </motion.div>
-          )}
-          {b && (
-            <motion.div
-              initial={{ opacity: 0, rotate: 8, y: 20 }}
-              animate={{ opacity: 1, rotate: 4, y: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.7 }}
-              className="absolute top-[110px] right-0 w-[220px] rounded-card bg-card p-3 text-ink shadow-lift"
-            >
-              <SubjectChip subject={b} />
-              <p className="mt-2.5 text-[15px] font-medium">Contrôle de {b.name}</p>
-              <div className="mt-2">
-                <TestPill />
-              </div>
-            </motion.div>
-          )}
+        {/* Your companion for the quest. Decorative: the same words are above. */}
+        <div aria-hidden className="relative mx-auto hidden h-[300px] w-[280px] md:block">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.6 }}
+            className="absolute top-0 right-0 z-10 w-[188px] border-2 border-ink bg-card px-3 py-2 text-[13px] leading-[1.35] text-ink shadow-card"
+          >
+            Prêt ? On commence par ton prochain contrôle.
+          </motion.div>
+          <motion.img
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 0.5 }}
+            src="/mascot.png"
+            alt=""
+            width={124}
+            height={300}
+            className="pixelated absolute bottom-0 left-1/2 h-[290px] w-auto -translate-x-1/2"
+          />
         </div>
       </motion.div>
     </section>

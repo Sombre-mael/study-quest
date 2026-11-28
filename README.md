@@ -1,169 +1,74 @@
 # Study Quest
 
-Study Quest est un planner de révisions qui se joue. Sous le capot, c'est un
-planning calme : une page bleu-vert profond, une rangée de colonnes par jour et
-des cartes de session blanches. Par-dessus vient une couche jeu — chaque
-session vaut de l'XP, cocher une carte fait monter de niveau, les quêtes du jour
-rapportent des bonus, les badges marquent les étapes et chaque contrôle est un
-boss dont la barre de vie est faite de minutes de révision.
+**Tes révisions, version quête.**
 
-Tout est enregistré dans le navigateur (localStorage, clé `study-planner:v2`) :
-pas de compte, pas de base de données, pas de synchronisation. Le style est
-pixel art — Pixelify Sans pour le texte, Press Start 2P pour les titres, angles
-droits, cadres d'encre de 2 px, ombres dures décalées, grille de pixels et
-scanlines discrètes en fond.
+Study Quest transforme un planning de révisions en jeu auquel on a envie de
+revenir. Tu annonces ton prochain contrôle, l'app découpe le travail en séances
+sur les jours qui précèdent, et chaque séance terminée rapporte de l'XP, fait
+monter ton niveau et remplit des quêtes. Le stress des révisions devient une
+progression visible.
 
-## Ce que fait l'application
+Pas de compte, pas d'abonnement, pas de tableau Excel abandonné au bout de trois
+jours : une app sur ton téléphone, un plan clair, et la satisfaction de cocher.
 
-- **Planifier un contrôle.** « Start your quest » demande une matière, une
-  date, un temps de révision total et une durée de session, puis répartit les
-  sessions sur les jours qui précèdent (`src/lib/plan.ts`).
-- **Le tableau de la semaine.** Les jours défilent horizontalement sur grand
-  écran ; les cartes peuvent être ajoutées, modifiées, dupliquées, cochées,
-  supprimées (avec annulation) et glissées d'un jour à l'autre. Les cartes
-  rattachées à un contrôle renvoient vers celui-ci.
-- **Minuteur de concentration.** Le bouton lecture d'une carte, ou « Start
-  focus » dans son menu, ouvre un minuteur Pomodoro plein écran (blocs de
-  concentration entrecoupés de pauses). À la fin du dernier bloc, la carte est
-  cochée et le temps est enregistré ; quitter plus tôt conserve les minutes
-  déjà faites.
-- **Limite quotidienne.** Un jour au-delà de la limite (2 h par défaut) reçoit
-  un anneau d'alerte, une pastille « de trop » et un bouton **Rééquilibrer** qui
-  déplace les dernières sessions vers les jours les plus proches ayant de la
-  place, sans jamais dépasser la date d'un contrôle. Réglable dans More → Daily
-  limit & timer.
-- **Préparation à l'examen.** Chaque carte de contrôle et la page de progrès
-  comparent le travail sur la matière dans les trois semaines précédant le
-  contrôle à l'objectif fixé ; un remplissage clair montre ce qui reste
-  planifié.
-- **Journal de quêtes** (`/quests`, le bandeau de niveau dans l'en-tête) :
-  niveau, rang, XP jusqu'au niveau suivant, les quatre quêtes du jour, les
-  badges, les boss et le mini-jeu d'échauffement. L'XP vient du même journal
-  d'étude que le planner, rien n'est stocké deux fois : un XP par minute
-  étudiée plus 15 par session cochée, plus les quêtes du jour et les bonus du
-  warm-up. Les niveaux suivent une courbe fixe et la série multiplie la valeur
-  du jour (×1,25 dès 3 jours, ×1,5 dès 7, ×2 dès 14) — tout est dans
-  `src/lib/game.ts`.
-- **Mini-jeu d'échauffement.** Un memory de 30 secondes avec tes matières, qui
-  rapporte jusqu'à 50 XP bonus, pour trois parties payées par jour
-  (`WARM_UP_DAILY_LIMIT`) ; ensuite le plateau reste jouable mais ne rapporte
-  plus rien jusqu'au lendemain.
-- **Progrès** (`/stats`) : temps étudié par matière, série, sessions terminées,
-  prochain contrôle et les 14 derniers jours face à la limite quotidienne.
-- **Matières** (`/subjects`) : ajouter, renommer, changer la couleur et l'icône.
-- **Vues semaine et mois** (`/week`, `/month`) : la semaine affiche du lundi au
-  dimanche avec glisser-déposer, le mois donne tous les jours d'un coup d'œil et
-  ouvre un jour sur le tableau.
-- **Imprimer une semaine** (`/print?d=YYYY-MM-DD`) : une feuille blanche d'une
-  page, dimensionnée pour être capturée proprement et imprimée en paysage.
-- **Accueil des nouveaux.** Une première visite arrive sur un planner vide : un
-  panneau de bienvenue propose de planifier un contrôle, d'ajouter une séance ou
-  de partir de ses matières. Le plan d'exemple (cartes et historique de démo)
-  reste disponible à la demande, depuis ce panneau ou le menu More ; le drapeau
-  `seedForNewUsers` de `src/data.ts` permet de le remettre par défaut.
-- **Guide de style** (`/styleguide`, lié depuis le menu More et les pieds de
-  page) : tous les tokens et composants, rendus en direct.
+## Ce que tu gagnes
 
-## Installable et hors ligne (PWA)
+**Un plan, pas une page blanche.** Donne la matière, la date et le temps que tu
+veux y consacrer : Study Quest répartit les séances et choisit des techniques
+(résumés, fiches, exercices, annales) du premier jour jusqu'à la veille.
 
-L'app est une PWA : `vite-plugin-pwa` génère `manifest.webmanifest`, les icônes
-et un service worker Workbox (`visite → installation sur l'écran d'accueil`),
-partout où le `base` la sert, y compris sous `/study-quest/` sur Pages.
+**Des sessions qui tiennent debout.** Un minuteur de concentration plein écran
+enchaîne les blocs de travail et les pauses, puis coche ta séance tout seul. Tu
+peux sortir avant : le temps déjà fait est gardé.
 
-- **Hors ligne.** Le build entier, les icônes et le manifeste sont précachés ;
-  les polices Google sont mises en cache au premier affichage, donc l'app
-  s'ouvre et fonctionne sans réseau. Les données restent dans le
-  `localStorage` de l'appareil, comme avant.
-- **Mises à jour.** `registerType: 'autoUpdate'` : une nouvelle version prend la
-  main au chargement suivant, sans invite.
-- **Invite d'installation.** `src/app/InstallPrompt.tsx` affiche une barre
-  « Installer Study Quest » via `beforeinstallprompt` (Chrome, Edge, Android) ou
-  les instructions Partager → écran d'accueil sur iOS, puis se souvient d'avoir
-  été écartée. Elle disparaît une fois l'app lancée en `standalone`.
-- **Icônes.** `pnpm run icons` rasterise `public/favicon.svg` en 192, 512,
-  512 *maskable* et `apple-touch-icon` (script `scripts/generate-icons.mjs`).
+**Une journée qui reste réaliste.** Une limite quotidienne (2 h par défaut)
+signale les journées trop chargées et un bouton **Rééquilibrer** déplace les
+séances en trop vers les jours voisins, sans jamais dépasser la date d'un
+contrôle.
 
-## Sur téléphone
+**Le contrôle comme un boss.** Chaque contrôle a une barre de vie faite de
+minutes de révision. La préparation compare ce que tu as fait dans les trois
+semaines précédentes à l'objectif : tu vois exactement ce qu'il reste à
+abattre.
 
-En dessous de 768 px, l'application a sa propre mise en page, pas un tableau
-rétréci :
+**Le plaisir de la montée en niveau.** XP, niveaux et rangs, quatre quêtes par
+jour, badges à collectionner, coffre quotidien, série de jours studieux qui
+multiplie les gains. Un mini-jeu de mémoire de 30 secondes sert d'échauffement
+avant de commencer.
 
-- une barre d'onglets fixe en bas (Planning, Quêtes, Progrès, Matières) avec la
-  marge de sécurité de l'écran, et un en-tête allégé qui ne garde que le logo,
-  le niveau et le menu More ;
-- le planner passe **à un jour à la fois** : un bandeau de dates à faire
-  défiler, avec un point par session et un drapeau pour les contrôles, puis les
-  cartes du jour en pleine largeur, son total et ses actions Add session /
-  Rééquilibrer (`src/app/MobileBoard.tsx`) ;
-- la semaine empile ses sept jours en blocs compacts, le mois garde ses sept
-  colonnes avec des points à la place des noms de cartes ;
-- les dialogues deviennent des feuilles qui montent du bas, avec un pied de
-  dialogue au-dessus de la barre gestuelle du téléphone.
+**Tes chiffres, enfin lisibles.** Temps par matière, série en cours, séances
+terminées, prochain contrôle et les deux dernières semaines face à ta limite.
 
-## Lancer le projet
+**Ton planning partout.** Vue jour sur téléphone (un jour à la fois, en pleine
+largeur), semaine avec glisser-déposer, mois d'un coup d'œil, et une feuille
+imprimable pour afficher la semaine au-dessus du bureau.
 
-Nécessite Node 20+ et pnpm. Aucune étape avec Bun.
+## Une app, pas un site
 
-```sh
-pnpm install       # installe à partir de pnpm-lock.yaml
-pnpm run dev       # Vite + le Worker dans workerd, sur http://localhost:5182
-pnpm run build     # dist/client (assets) + dist/study_planner/index.js (Worker)
-pnpm run typecheck # tsc --noEmit
-```
+Study Quest s'installe sur l'écran d'accueil de ton téléphone ou de ton
+ordinateur : elle s'ouvre en plein écran, comme une application, et continue de
+fonctionner **sans connexion** — dans le métro, en cours, en vacances. Une
+barre « Installer Study Quest » propose l'installation à la première visite.
 
-`pnpm-workspace.yaml` autorise les scripts de build de `esbuild` et `workerd` ;
-pnpm 11 refuse une installation qui les laisserait non approuvés.
+## Tes données restent chez toi
 
-## Héberger sur GitHub Pages
+Tout est enregistré dans ton navigateur, sur ton appareil : aucun compte, aucun
+serveur, aucune donnée envoyée. Personne d'autre que toi ne voit ton planning.
+En contrepartie, tes données suivent cet appareil et ce navigateur : garde la
+même installation pour retrouver ta progression.
 
-Le site est statique, il se publie donc tel quel : `.github/workflows/pages.yml`
-construit le projet et dépose `dist/client` sur Pages à chaque push sur `main`.
-Il suffit de choisir **GitHub Actions** comme source dans Settings → Pages.
+## Pour qui ?
 
-L'application est servie sous `https://sombre-mael.github.io/study-quest/` : le
-workflow construit avec `SITE_BASE=/study-quest/`, et `src/lib/router.tsx`
-ajoute puis retire ce préfixe autour de routes qui restent écrites `/quests`,
-`/week`… `scripts/postbuild.mjs` copie enfin `index.html` en `404.html` pour
-qu'un lien profond ou un rechargement ouvre l'application au lieu du 404 de
-GitHub.
+Lycéens en pleine période de contrôles, étudiants en partiels, candidats au
+bac, au brevet ou à un concours — et tous ceux qui révisent mieux avec un
+objectif clair, un minuteur et une petite récompense au bout.
 
-## Héberger sur Vercel
+## Le style
 
-`vercel.json` décrit tout : `pnpm run build`, sortie `dist/client`, et un
-rewrite vers `index.html` pour les routes côté client. Sans `SITE_BASE`, le
-`base` reste `/`, donc l'import du dépôt dans Vercel fonctionne sans réglage.
-Pense à autoriser pnpm 11 (le `packageManager` de `package.json` s'en charge)
-et à Node 22 ou plus.
+Pixel art assumé : écran sarcelle, cartes crème à cadre d'encre, polices
+pixelisées, ombres dures. Ton compagnon de route, un étudiant pixelisé en
+sweat bleu, t'accueille au premier lancement et veille sur ton planning vide.
 
-## Comment c'est construit
+---
 
-React 19 avec Vite 8, Tailwind CSS v4 (tokens `@theme` dans `src/styles.css`),
-Motion pour les animations, et un petit Worker Cloudflare qui sert l'application.
-
-- `src/app/` — les écrans : `Board` (grand écran), `MobileBoard` (téléphone),
-  `MobileTabBar`, `DayColumn`, `SessionCard`, `WeekView`, `MonthView`, `Hero`,
-  `FocusTimer`, `QuestsPage`, `MemoryGame`, `GameHud`, `StatsPage`,
-  `SubjectsPage`, `PrintWeek`, `Onboarding`, `StyleGuide`, et les boîtes de
-  dialogue (`PlanDialog`, `ItemDialog`, `SubjectDialog`, `SettingsDialog`).
-- `src/components/` — le design system : `Button`, `IconButton`, `Panel`,
-  `Dialog`, `Menu`, `Field` / `Segmented` / sélecteurs, `Pill`, `SubjectChip`,
-  `ReadinessMeter`, `ProgressRing`, `Charts`, `StatTile`, `Toast`, `Logo`.
-  Tous visibles sur `/styleguide`.
-- `src/lib/store.ts` — le reducer et la persistance localStorage (un
-  enregistrement `v1` est migré). Remplacer son load/save par des appels API
-  pour garder les plans en base.
-- `src/lib/game.ts` — XP, niveaux, rangs, bonus de série, quêtes du jour,
-  badges, boss et plafond/récompense du warm-up. `src/lib/insights.ts` contient
-  la charge d'un jour, le rééquilibrage, la préparation, la série et le temps
-  par matière ; `src/lib/focus.ts` découpe une session en blocs Pomodoro ;
-  `src/lib/plan.ts` répartit les sessions.
-- `src/lib/router.tsx` — un routeur minimal basé sur l'History API (`useRoute`,
-  `navigate`, `Link`) ; le Worker sert `index.html` pour toutes les routes.
-- `src/data.ts` — tous les textes, les matières par défaut, couleurs et icônes,
-  les options de limite quotidienne et de minuteur, le plan d'exemple et
-  l'historique d'étude d'exemple.
-- `src/worker/index.ts` — `GET /api/health`, un 404 JSON pour les autres chemins
-  `/api`, et l'application pour tout le reste.
-
-Les animations respectent le réglage système « réduire les animations ».
-
+Fait avec soin pour réviser sans s'épuiser. Bonne quête.

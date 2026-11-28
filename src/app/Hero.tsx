@@ -34,7 +34,7 @@ export function Hero({ onStart, compact = false }: { onStart: () => void; compac
           className="border-[3px] border-[#fdf8ec] bg-[#04322f] shadow-[0_0_0_2px_#10201f,6px_6px_0_rgb(2_22_20/0.5)]"
         >
           <img
-            src="/pixel-scholar.png"
+            src="/mascot-bust.png"
             alt=""
             width={104}
             height={104}
