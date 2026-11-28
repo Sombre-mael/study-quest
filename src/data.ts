@@ -52,10 +52,11 @@ export const copy = {
 }
 
 /**
- * Brand-new visitors see the sample plan so the template looks alive. Set this
- * to false to open on the onboarding empty state instead.
+ * A brand-new visitor opens on an empty planner and the onboarding panel; the
+ * sample plan stays one click away ("Charger le planning d'exemple").
+ * Set this to true to fill first visits with demo cards again.
  */
-export const seedForNewUsers = true
+export const seedForNewUsers = false
 
 /** Icons a subject can wear. Keys are stored, so add new ones at the end. */
 export const subjectIcons = {

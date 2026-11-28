@@ -22,6 +22,7 @@ import { Hero } from './Hero'
 import { ItemDialog, type ItemDraft } from './ItemDialog'
 import { MemoryGame } from './MemoryGame'
 import { MobileBoard } from './MobileBoard'
+import { InstallPrompt } from './InstallPrompt'
 import { MobileTabBar } from './MobileTabBar'
 import { MonthView } from './MonthView'
 import { captureFlight } from './motion'
@@ -368,6 +369,7 @@ export function App() {
           />
           {page}
           <MobileTabBar path={path} chestReady={game.chest.available} />
+          <InstallPrompt />
         </div>
 
         <AnimatePresence>

@@ -56,12 +56,32 @@ scanlines discrètes en fond.
   ouvre un jour sur le tableau.
 - **Imprimer une semaine** (`/print?d=YYYY-MM-DD`) : une feuille blanche d'une
   page, dimensionnée pour être capturée proprement et imprimée en paysage.
-- **Accueil des nouveaux.** Un planner vide (More → Start fresh) affiche un
-  panneau de bienvenue à la place du tableau. Passer `seedForNewUsers` à
-  `false` dans `src/data.ts` pour que les nouveaux visiteurs arrivent dessus
-  plutôt que sur le plan d'exemple.
+- **Accueil des nouveaux.** Une première visite arrive sur un planner vide : un
+  panneau de bienvenue propose de planifier un contrôle, d'ajouter une séance ou
+  de partir de ses matières. Le plan d'exemple (cartes et historique de démo)
+  reste disponible à la demande, depuis ce panneau ou le menu More ; le drapeau
+  `seedForNewUsers` de `src/data.ts` permet de le remettre par défaut.
 - **Guide de style** (`/styleguide`, lié depuis le menu More et les pieds de
   page) : tous les tokens et composants, rendus en direct.
+
+## Installable et hors ligne (PWA)
+
+L'app est une PWA : `vite-plugin-pwa` génère `manifest.webmanifest`, les icônes
+et un service worker Workbox (`visite → installation sur l'écran d'accueil`),
+partout où le `base` la sert, y compris sous `/study-quest/` sur Pages.
+
+- **Hors ligne.** Le build entier, les icônes et le manifeste sont précachés ;
+  les polices Google sont mises en cache au premier affichage, donc l'app
+  s'ouvre et fonctionne sans réseau. Les données restent dans le
+  `localStorage` de l'appareil, comme avant.
+- **Mises à jour.** `registerType: 'autoUpdate'` : une nouvelle version prend la
+  main au chargement suivant, sans invite.
+- **Invite d'installation.** `src/app/InstallPrompt.tsx` affiche une barre
+  « Installer Study Quest » via `beforeinstallprompt` (Chrome, Edge, Android) ou
+  les instructions Partager → écran d'accueil sur iOS, puis se souvient d'avoir
+  été écartée. Elle disparaît une fois l'app lancée en `standalone`.
+- **Icônes.** `pnpm run icons` rasterise `public/favicon.svg` en 192, 512,
+  512 *maskable* et `apple-touch-icon` (script `scripts/generate-icons.mjs`).
 
 ## Sur téléphone
 
