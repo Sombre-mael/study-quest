@@ -1,6 +1,7 @@
 import { motion, type Variants } from 'motion/react'
 
 import { Button } from '../components/Button'
+import { Mascot } from '../components/Mascot'
 import { copy } from '../data'
 import { cx } from '../lib/cx'
 
@@ -33,13 +34,7 @@ export function Hero({ onStart, compact = false }: { onStart: () => void; compac
           custom={0}
           className="border-[3px] border-[#fdf8ec] bg-[#04322f] shadow-[0_0_0_2px_#10201f,6px_6px_0_rgb(2_22_20/0.5)]"
         >
-          <img
-            src="/mascot-bust.png"
-            alt=""
-            width={104}
-            height={104}
-            className="pixelated block size-[clamp(64px,11vh,104px)] object-cover"
-          />
+          <Mascot variant="bust" />
         </motion.div>
       )}
       <motion.h1

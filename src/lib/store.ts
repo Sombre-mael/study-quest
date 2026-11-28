@@ -213,11 +213,14 @@ function parse(raw: string): Partial<State> | null {
   }
 }
 
-function savedState(parsed: Partial<State> | null): State | null {
+/** Fills a partial save (or an imported file) with defaults; null if it has no planner in it. */
+export function normalizeState(parsed: Partial<State> | null | undefined): State | null {
   if (!parsed || !Array.isArray(parsed.items) || !Array.isArray(parsed.subjects)) return null
+  const items = parsed.items.filter((i) => !!i && typeof i.id === 'string' && typeof i.date === 'string' && typeof i.title === 'string')
+  const subjects = parsed.subjects.filter((s) => !!s && typeof s.id === 'string' && typeof s.name === 'string')
   return {
-    items: parsed.items,
-    subjects: parsed.subjects,
+    items,
+    subjects,
     log: Array.isArray(parsed.log) ? parsed.log : [],
     settings: { ...defaultSettings, ...parsed.settings },
     bonusXp: typeof parsed.bonusXp === 'number' ? parsed.bonusXp : 0,
@@ -231,7 +234,7 @@ function load(today: ISODate): State {
   const fresh = () => (seedForNewUsers ? sampleState(today) : emptyState())
   const raw = read(KEY)
   if (raw) {
-    const saved = savedState(parse(raw))
+    const saved = normalizeState(parse(raw))
     if (saved) return saved
     // A save we cannot read is parked, never replaced in place by a fresh plan.
     try {

@@ -57,6 +57,12 @@ serveur, aucune donnée envoyée. Personne d'autre que toi ne voit ton planning.
 En contrepartie, tes données suivent cet appareil et ce navigateur : garde la
 même installation pour retrouver ta progression.
 
+Et pour ne rien perdre — téléphone changé, navigateur réinstallé, cache
+vidé — le menu **Plus** propose **Exporter mes données** : un fichier
+`study-quest-….json` avec tout ton planning, à garder quelque part. 
+**Importer une sauvegarde…** le remet en place, sur cet appareil ou sur un
+autre.
+
 ## Pour qui ?
 
 Lycéens en pleine période de contrôles, étudiants en partiels, candidats au
@@ -67,7 +73,9 @@ objectif clair, un minuteur et une petite récompense au bout.
 
 Pixel art assumé : écran sarcelle, cartes crème à cadre d'encre, polices
 pixelisées, ombres dures. Ton compagnon de route, un étudiant pixelisé en
-sweat bleu, t'accueille au premier lancement et veille sur ton planning vide.
+sweat bleu, t'accueille au premier lancement et veille sur ton planning vide —
+il s'étire, sautille et te glisse un mot d'encouragement de temps en temps
+(sans jamais s'agiter si tu as demandé moins d'animations).
 
 ---
 

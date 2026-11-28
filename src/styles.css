@@ -55,6 +55,13 @@
   --animate-drift: drift 22s ease-in-out infinite alternate;
   --animate-breathe: breathe 8s ease-in-out infinite;
 
+  /* The mascot: a slow float, then one of these every few seconds. */
+  --animate-mascot-bob: mascot-bob 3.8s ease-in-out infinite;
+  --animate-mascot-hop: mascot-hop 0.85s ease-in-out;
+  --animate-mascot-sway: mascot-sway 1.2s ease-in-out;
+  --animate-mascot-stretch: mascot-stretch 1.4s ease-in-out;
+  --animate-mascot-peek: mascot-peek 1.1s ease-in-out;
+
   /* Motion: CSS durations and easings. Springs live in src/app/motion.ts. */
   --duration-fast: 120ms;
   --duration-base: 180ms;
@@ -73,6 +80,32 @@
   @keyframes drift {
     from { transform: translate3d(-6%, -4%, 0) scale(1); }
     to { transform: translate3d(6%, 4%, 0) scale(1.12); }
+  }
+  @keyframes mascot-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes mascot-hop {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    18% { transform: translateY(0) scaleY(0.94); }
+    46% { transform: translateY(-16px) scaleY(1.03); }
+    74% { transform: translateY(0) scaleY(0.97); }
+  }
+  @keyframes mascot-sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3.5deg); }
+    55% { transform: rotate(3deg); }
+    80% { transform: rotate(-1.2deg); }
+  }
+  @keyframes mascot-stretch {
+    0%, 100% { transform: scale(1); }
+    35% { transform: scale(0.97, 1.06); }
+    70% { transform: scale(1.01, 1); }
+  }
+  @keyframes mascot-peek {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    40% { transform: translateX(9px) rotate(3deg); }
+    70% { transform: translateX(4px) rotate(1.5deg); }
   }
 }
 

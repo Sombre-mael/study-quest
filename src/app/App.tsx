@@ -3,6 +3,7 @@ import { lazy, memo, Suspense, useCallback, useEffect, useMemo, useRef, useState
 
 import { Button } from '../components/Button'
 
+import { downloadBackup, readBackup } from '../lib/backup'
 import { Toast, type ToastState } from '../components/Toast'
 import { type Item, type Settings, type Subject } from '../data'
 import { addDays, dayLabel, isISODate, todayISO, type ISODate } from '../lib/dates'
@@ -73,6 +74,7 @@ export function App() {
   const [levelUp, setLevelUp] = useState<{ level: number; rank: string } | null>(null)
   const [chestPrize, setChestPrize] = useState<number | null>(null)
   const toastId = useRef(0)
+  const backupInput = useRef<HTMLInputElement>(null)
   const stateRef = useRef(state)
   stateRef.current = state
   const openPlan = useCallback(() => setPlanOpen(true), [])
@@ -121,6 +123,26 @@ export function App() {
     })
   }, [dispatch])
   const dismissToast = useCallback(() => setToast(null), [])
+
+  // A backup is the whole planner in one file: the only way to move it to
+  // another phone or get it back after a browser cleared its storage.
+  const exportData = useCallback(() => {
+    downloadBackup(stateRef.current)
+    notify('Sauvegarde téléchargée')
+  }, [notify])
+  const importData = useCallback(
+    async (file: File) => {
+      const snapshot = stateRef.current
+      try {
+        const next = await readBackup(file)
+        dispatch({ type: 'replace', state: next })
+        notify(`Sauvegarde importée · ${next.items.length} ${next.items.length === 1 ? 'séance' : 'séances'}`, snapshot)
+      } catch (error) {
+        notify(error instanceof Error ? error.message : 'Import impossible')
+      }
+    },
+    [dispatch, notify],
+  )
 
   const awardWarmUp = useCallback(
     (xp: number) => {
@@ -366,6 +388,20 @@ export function App() {
             onSettings={() => setSettingsOpen(true)}
             onFresh={startFresh}
             onSample={loadSample}
+            onExport={exportData}
+            onImport={() => backupInput.current?.click()}
+          />
+          <input
+            ref={backupInput}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              // Clear first so picking the same file again still fires.
+              e.target.value = ''
+              if (file) void importData(file)
+            }}
           />
           {page}
           <MobileTabBar path={path} chestReady={game.chest.available} />

@@ -1,4 +1,4 @@
-import { CalendarDays, CalendarRange, ChartColumn, Columns3, Eraser, MoreHorizontal, Palette, Printer, RotateCcw, Settings2, Shapes, Swords } from 'lucide-react'
+import { CalendarDays, CalendarRange, ChartColumn, Columns3, Download, Eraser, MoreHorizontal, Palette, Printer, RotateCcw, Settings2, Shapes, Swords, Upload } from 'lucide-react'
 import { useRef, useState, type ReactElement } from 'react'
 
 import { Segmented } from '../components/Field'
@@ -62,6 +62,8 @@ export function AppHeader({
   onSettings,
   onFresh,
   onSample,
+  onExport,
+  onImport,
 }: {
   path: string
   view: PlannerView | null
@@ -71,6 +73,8 @@ export function AppHeader({
   onSettings: () => void
   onFresh: () => void
   onSample: () => void
+  onExport: () => void
+  onImport: () => void
 }) {
   const more = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
@@ -107,6 +111,9 @@ export function AppHeader({
             { label: 'Limite quotidienne et minuteur…', icon: <Settings2 />, onSelect: onSettings },
             { label: 'Imprimer cette semaine', icon: <Printer />, onSelect: () => navigate(`/print${anchor ? `?d=${anchor}` : ''}`) },
             { label: 'Guide de style', icon: <Palette />, onSelect: () => navigate('/styleguide') },
+            { type: 'separator' },
+            { label: 'Exporter mes données', icon: <Download />, onSelect: onExport },
+            { label: 'Importer une sauvegarde…', icon: <Upload />, onSelect: onImport },
             { type: 'separator' },
             empty
               ? { label: 'Charger le planning d’exemple', icon: <RotateCcw />, onSelect: onSample }
