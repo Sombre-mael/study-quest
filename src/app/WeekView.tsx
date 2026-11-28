@@ -55,7 +55,10 @@ export function WeekView({
           </Button>
         }
       />
-      <div className="grid flex-1 grid-cols-1 gap-2 px-(--board-pad) sm:grid-cols-2 sm:gap-(--col-gap) lg:grid-cols-4 xl:grid-cols-7">
+      {/* Phones scroll the week one day at a time, like the planning's date
+          strip: snap per day, fades at both edges, no scrollbar. From `sm` up
+          the same columns become the usual grid. */}
+      <div className="edge-fade no-scrollbar flex min-h-0 flex-1 snap-x snap-mandatory scroll-px-4 items-start gap-3 overflow-x-auto px-4 pb-1 [&>*]:snap-start sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-(--board-pad) sm:pb-0 sm:[-webkit-mask-image:none] sm:[mask-image:none] sm:gap-(--col-gap) lg:grid-cols-4 xl:grid-cols-7">
         {days.map((date, i) => (
           <DayColumn
             key={date}
