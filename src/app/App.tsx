@@ -6,7 +6,8 @@ import { Button } from '../components/Button'
 import { downloadBackup, readBackup } from '../lib/backup'
 import { Toast, type ToastState } from '../components/Toast'
 import { type Item, type Settings, type Subject } from '../data'
-import { addDays, dayLabel, isISODate, todayISO, type ISODate } from '../lib/dates'
+import { useToday } from '../lib/clock'
+import { addDays, dayLabel, isISODate, type ISODate } from '../lib/dates'
 import { formatDuration, uid } from '../lib/format'
 import { gameState, rollChest, warmUpSubjects, XP_PER_TICK } from '../lib/game'
 import { readiness, rebalance } from '../lib/insights'
@@ -60,7 +61,7 @@ const HeroSlot = memo(Hero)
 let lastPlannerPath = '/'
 
 export function App() {
-  const today = useMemo(() => todayISO(), [])
+  const today = useToday()
   const [state, dispatch] = usePlanner(today)
   const { items, subjects, log, settings, bonusXp, warmUp, chest, shields } = state
   const route = useRoute()
